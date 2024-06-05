@@ -1,0 +1,11 @@
+#only in python 3.10.14
+pip
+scikit-learn=1.2.2
+shap
+openml
+lightgbm
+conda-forge::ds-lime
+conda-forge::lofo-importance
+conda-forge::skater
+#conda-forge::eli5
+conda-forge::dalex
