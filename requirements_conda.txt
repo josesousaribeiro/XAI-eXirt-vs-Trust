@@ -7,5 +7,4 @@ lightgbm
 conda-forge::ds-lime
 conda-forge::lofo-importance
 conda-forge::skater
-#conda-forge::eli5
 conda-forge::dalex
