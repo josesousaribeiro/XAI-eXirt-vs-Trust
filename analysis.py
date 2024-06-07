@@ -1,4 +1,6 @@
 import numpy
+import pandas as pd
+
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
@@ -9,14 +11,15 @@ from sklearn.metrics import accuracy_score
 
 
 
-def apply_perturbation(df,percent):
-    #aplica ruido a cada instâcia do atributo da vez
-    number_of_instances = len(df.index)
-    for c in df.columns:    
-        noise = numpy.random.normal(0, percent, number_of_instances)
-        df[c] = df[c] + noise
-
-    return df
+def apply_perturbation(df,percent,seed):
+  #aplica ruido a cada instâcia do atributo da vez
+  number_of_instances = len(df.index)
+  for c in df.columns:
+      seed = seed + 1  
+      numpy.random.seed(seed)  
+      noise = numpy.random.normal(0, percent, number_of_instances)
+      df[c] = df[c] + noise
+  return df
 
 def model_output_analysis(y_test,y_pred):
       accuracy = accuracy_score(y_test, y_pred)
@@ -41,3 +44,5 @@ def normalize(df):
 
 def y_as_binary(y):
    return  y.map({"tested_positive":1, "tested_negative":0})
+
+

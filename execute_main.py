@@ -28,6 +28,9 @@ from sklearn.model_selection import StratifiedKFold
 from analysis import * 
 import pandas as pd
 
+
+seed = 42
+
 #initialize models
 models = {
           'mlp': MLPClassifier(verbose=False),
@@ -96,16 +99,17 @@ for key in models:
 #generate perturbed datasets to test
 
 tests = {
-    'x_test_0%': X_test,
-    'x_test_15%': apply_perturbation(X_test, 0.15),
-    'x_test_30%': apply_perturbation(X_test, 0.3)}
+    'x_test_0%': X_test.copy(),
+    'x_test_15%': apply_perturbation(X_test.copy(), 0.15, 1),
+    'x_test_30%': apply_perturbation(X_test.copy(), 0.3, 100)}
 
 df_analysis = pd.DataFrame(index=['accuracy','precision','recall','f1','roc_auc'])
 for i in models:
   for j in tests:
+
     y_pred = models[i].predict(tests[j])
     
-    accuracy, precision, recall, f1, roc_auc = model_output_analysis(y_test,y_pred)
+    accuracy, precision, recall, f1, roc_auc = model_output_analysis(y_test, y_pred)
 
     df_analysis.at['accuracy',i+'_'+j] = accuracy
     df_analysis.at['precision',i+'_'+j] = precision
