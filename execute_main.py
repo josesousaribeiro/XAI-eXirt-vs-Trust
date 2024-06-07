@@ -67,13 +67,14 @@ for key in models:
                   ]}
   else:
     if key == 'lgbm':
-      params_grid =  {'learning_rate': [0.1, 0.15, 0.2],
+      params_grid =  {'learning_rate': [0.01, 0.015, 0.02],
                       'max_depth': [2, 3, 4, 5, 6],
-                      'n_estimators': [50, 100,200,300, 400],
-                      'min_data_in_leaf': [40, 60,80]}
+                      'n_estimators': [200,300, 400, 500],
+                      'min_data_in_leaf': [40, 60,80],
+                      'colsample_bytree': [0.7, 1]}
     else:
       if key == 'knn':
-        params_grid = {'leaf_size': [1, 10, 20, 40],
+        params_grid = {'leaf_size': [1, 10, 20, 40, 50],
                       'algorithm': ['ball_tree', 'kd_tree', 'brute'],
                       'metric': ['minkowski','cityblock','euclidean'],
                       'n_neighbors': [2, 4, 6, 8, 10, 12, 14, 16]}
@@ -102,8 +103,15 @@ for key in models:
 
 tests = {
     'x_test_0%': X_test.copy(),
-    'x_test_15%': apply_perturbation(X_test.copy(), 0.15, 1),
-    'x_test_30%': apply_perturbation(X_test.copy(), 0.3, 100)}
+    'x_test_2%': apply_perturbation(X_test.copy(), 0.02, 1),
+    'x_test_3%': apply_perturbation(X_test.copy(), 0.03, 50),
+    'x_test_4%': apply_perturbation(X_test.copy(), 0.04, 100),
+    'x_test_5%': apply_perturbation(X_test.copy(), 0.05, 200),
+    'x_test_6%': apply_perturbation(X_test.copy(), 0.06, 300),
+    'x_test_7%': apply_perturbation(X_test.copy(), 0.07, 400),
+    'x_test_8%': apply_perturbation(X_test.copy(), 0.09, 500),
+    'x_test_9%': apply_perturbation(X_test.copy(), 0.10, 600),
+    }
 
 df_analysis = pd.DataFrame(index=['accuracy','precision','recall','f1','roc_auc'])
 for i in models:
@@ -120,3 +128,4 @@ for i in models:
     df_analysis.at['roc_auc',i+'_'+j] = roc_auc
 
 print(df_analysis)
+df_analysis.to_csv('df_analysis.csv',sep=',')

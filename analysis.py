@@ -43,12 +43,12 @@ def normalize(df):
     return df_norm
 
 def z_score(df):
-    # copy the dataframe
-    df_std = df.copy()
-    # apply the z-score method
-    for column in df_std.columns:
-        df_std[column] = (df_std[column] - df_std[column].mean()) / df_std[column].std()
-
+  # copy the dataframe
+  df_std = df.copy()
+  # apply the z-score method
+  for column in df_std.columns:
+      df_std[column] = (df_std[column] - df_std[column].mean()) / df_std[column].std()
+  return df_std
 
 def y_as_binary(y):
    return  y.map({"tested_positive":1, "tested_negative":0})
