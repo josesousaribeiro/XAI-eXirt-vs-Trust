@@ -58,17 +58,18 @@ X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, stratif
 #tunning models
 for key in models:
   if key == 'mlp':
-    params_grid = {'max_iter' : [1700],
+    params_grid = {'max_iter' : [3000],
                    'activation' : ['identity', 'logistic', 'tanh', 'relu'],
                    'solver' : ['sgd', 'adam'],
+                   'alpha' : [0.005, 0.01, 0.015],
                    'hidden_layer_sizes': [
-                    (3,),(4,),(5,),(6,),(7,),(8,),(9,),(10,),(11,)
+                    (5,),(10,),(15,),(5,5,),(5,10),(5,15,),(10,5),(10,10,),(10,15,),(15,5,),(15,10,),(15,15,)
                   ]}
   else:
     if key == 'lgbm':
-      params_grid =  {'learning_rate': [0.1,0.5],
-                      'max_depth': [1,2,3,4],
-                      'n_estimators': [100,200,300],
+      params_grid =  {'learning_rate': [0.1, 0.15, 0.2],
+                      'max_depth': [2, 3, 4, 5, 6],
+                      'n_estimators': [50, 100,200,300, 400],
                       'min_data_in_leaf': [40, 60,80]}
     else:
       if key == 'knn':
@@ -78,7 +79,7 @@ for key in models:
                       'n_neighbors': [2, 4, 6, 8, 10, 12, 14, 16]}
       else:
         if key == 'dt':
-          params_grid = {'min_samples_leaf': [1, 10, 20, 40],
+          params_grid = {'min_samples_leaf': [1, 10, 20],
                         'max_depth': [1, 6, 12],
                         'criterion': ['gini','entropy'],
                         'splitter': ['best', 'random'],
@@ -91,11 +92,12 @@ for key in models:
 
   # Fit the grid search to the data
   print()
-  print('Apply gridsearch in '+key+'...')
+  print('Apply gridsearch in '+key+'...best models is:')
   grid_search.fit(X, Y) #execute the cv in all instances of data
   models[key] = grid_search.best_estimator_
   models[key].fit(X_train,y_train) #fit the data with correct train split
-  
+  print(models[key])
+  print()
 #generate perturbed datasets to test
 
 tests = {
