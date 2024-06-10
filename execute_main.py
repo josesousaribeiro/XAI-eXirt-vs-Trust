@@ -100,12 +100,7 @@ tests = {
     'x_test_2%': apply_perturbation(X_test.copy(deep=True), 0.02, 20),
     'x_test_3%': apply_perturbation(X_test.copy(deep=True), 0.03, 30),
     'x_test_4%': apply_perturbation(X_test.copy(deep=True), 0.04, 40),
-    'x_test_5%': apply_perturbation(X_test.copy(deep=True), 0.05, 50),
-    'x_test_6%': apply_perturbation(X_test.copy(deep=True), 0.06, 60),
-    'x_test_7%': apply_perturbation(X_test.copy(deep=True), 0.07, 70),
-    'x_test_8%': apply_perturbation(X_test.copy(deep=True), 0.08, 80),
-    'x_test_9%': apply_perturbation(X_test.copy(deep=True), 0.09, 90),
-    'x_test_9%': apply_perturbation(X_test.copy(deep=True), 0.10, 100),
+    'x_test_5%': apply_perturbation(X_test.copy(deep=True), 0.05, 50)
     }
 
 df_performance_analysis = pd.DataFrame(index=['accuracy','precision','recall','f1','roc_auc'])
@@ -139,7 +134,24 @@ for i in models:
 
     #explanation by skater
     print()
-    print('Skater explaning...')
-    df_explanation_analysis['skater_'+i+'_'+j] = explainRankSkater(models[key].copy(), tests[j].copy(deep=True))
+    print('Skater explaning...'+i+'_'+j)
+    df_explanation_analysis['skater_'+i+'_'+j] = explainRankSkater(models[i], tests[j].copy(deep=True))
+
+    print('Eli5 explaning...'+i+'_'+j)
+    df_explanation_analysis['eli5_'+i+'_'+j] = explainRankByEli5(models[i], tests[j].copy(deep=True), y_test)
+
+    print('Shap explaning...'+i+'_'+j)
+    df_explanation_analysis['shap_'+i+'_'+j] = explainRankByKernelShap(models[i], tests[j].columns, tests[j].copy(deep=True),is_gradient=(i=='lgbm'))
     
-df_explanation_analysis.to_csv('df_explanation_analysis.csc',sep='')
+    print('Dalex explaning...'+i+'_'+j)
+    df_explanation_analysis['dalex_'+i+'_'+j] = explainRankDalex(models[i],tests[j].copy(deep=True), y_test)
+
+    print('Lofo explaning...'+i+'_'+j)
+    df_explanation_analysis['lofo_'+i+'_'+j] = explainRankByLofo(models[i], tests[j].copy(deep=True), y_test, tests[j].columns)
+
+    #print('ciu explaning...'+i+'_'+j)
+    #df_explanation_analysis['ciu_'+i+'_'+j] = explainRankByCiu(models[i], tests[j], tests[j].columns,create_dic_ciu(X),'ci')
+
+    #eXirt
+    
+df_explanation_analysis.to_csv('df_explanation_analysis.csv',sep=',')

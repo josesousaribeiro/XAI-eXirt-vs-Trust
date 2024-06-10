@@ -54,7 +54,22 @@ def explainRankByTreeShap(model, x_features_names, X, is_gradient=False):
 
     return temp_df['feat_name'].to_list()
 
-def explainRankByCiu(model, x_test, X, feature_names,context_dic,rank):
+
+#create context dictionary (necessary to CIU)
+def is_int(n):
+    for i in range(len(n)):
+      if isinstance(n[i],float):
+        return False
+    return True
+
+def create_dic_ciu(X):
+    attribute_names = X.columns
+    context_dic = {}
+    for k in range(len(attribute_names)):
+        context_dic[attribute_names[k]] = [min(X[attribute_names[k]]), max(X[attribute_names[k]]), is_int(X[attribute_names[k]])]
+    return context_dic
+
+def explainRankByCiu(model, x_test, feature_names,context_dic,rank):
 
     def _makeRankByCu(ciu):
         df_cu = pd.DataFrame(list(ciu.cu.items()), columns=['attribute', 'cu'])
