@@ -1,12 +1,4 @@
-#xai methods imports
-import eli5
-import shap
-import dalex as dx
-import ciu
-from eli5.sklearn import PermutationImportance
-from lofo import LOFOImportance, FLOFOImportance, Dataset
-from skater.core.explanations import Interpretation
-from skater.model import InMemoryModel
+
 
 #dataset import
 import openml
@@ -25,7 +17,8 @@ from sklearn.model_selection import StratifiedKFold
 
 #analysis data
 
-from analysis import * 
+from analysis import *
+from explanable_tools import * 
 import pandas as pd
 
 
@@ -103,17 +96,19 @@ for key in models:
 
 tests = {
     'x_test_0%': X_test.copy(),
-    'x_test_2%': apply_perturbation(X_test.copy(), 0.02, 1),
-    'x_test_3%': apply_perturbation(X_test.copy(), 0.03, 50),
-    'x_test_4%': apply_perturbation(X_test.copy(), 0.04, 100),
-    'x_test_5%': apply_perturbation(X_test.copy(), 0.05, 200),
-    'x_test_6%': apply_perturbation(X_test.copy(), 0.06, 300),
-    'x_test_7%': apply_perturbation(X_test.copy(), 0.07, 400),
-    'x_test_8%': apply_perturbation(X_test.copy(), 0.09, 500),
-    'x_test_9%': apply_perturbation(X_test.copy(), 0.10, 600),
+    'x_test_1%': apply_perturbation(X_test.copy(deep=True), 0.01, 0),
+    'x_test_2%': apply_perturbation(X_test.copy(deep=True), 0.02, 20),
+    'x_test_3%': apply_perturbation(X_test.copy(deep=True), 0.03, 30),
+    'x_test_4%': apply_perturbation(X_test.copy(deep=True), 0.04, 40),
+    'x_test_5%': apply_perturbation(X_test.copy(deep=True), 0.05, 50),
+    'x_test_6%': apply_perturbation(X_test.copy(deep=True), 0.06, 60),
+    'x_test_7%': apply_perturbation(X_test.copy(deep=True), 0.07, 70),
+    'x_test_8%': apply_perturbation(X_test.copy(deep=True), 0.08, 80),
+    'x_test_9%': apply_perturbation(X_test.copy(deep=True), 0.09, 90),
+    'x_test_9%': apply_perturbation(X_test.copy(deep=True), 0.10, 100),
     }
 
-df_analysis = pd.DataFrame(index=['accuracy','precision','recall','f1','roc_auc'])
+df_performance_analysis = pd.DataFrame(index=['accuracy','precision','recall','f1','roc_auc'])
 for i in models:
   for j in tests:
 
@@ -121,11 +116,30 @@ for i in models:
     
     accuracy, precision, recall, f1, roc_auc = model_output_analysis(y_test, y_pred)
 
-    df_analysis.at['accuracy',i+'_'+j] = accuracy
-    df_analysis.at['precision',i+'_'+j] = precision
-    df_analysis.at['recall',i+'_'+j] = recall
-    df_analysis.at['f1',i+'_'+j] = f1
-    df_analysis.at['roc_auc',i+'_'+j] = roc_auc
+    df_performance_analysis.at['accuracy',i+'_'+j] = round(accuracy,3)
+    df_performance_analysis.at['precision',i+'_'+j] = round(precision,3)
+    df_performance_analysis.at['recall',i+'_'+j] = round(recall,3)
+    df_performance_analysis.at['f1',i+'_'+j] = round(f1,3)
+    df_performance_analysis.at['roc_auc',i+'_'+j] = round(roc_auc,3)
 
-print(df_analysis)
-df_analysis.to_csv('df_analysis.csv',sep=',')
+print(df_performance_analysis)
+df_performance_analysis.to_csv('df_performance_analysis.csv',sep=',')
+
+
+df_explanation_analysis = pd.DataFrame()
+for i in models:
+  for j in tests: 
+  
+    #explanation by exirt
+    #print('eXirt explaning...')
+    #print('Explaining M1...')
+    #df_feature_rank['exirt_m1'], temp = explainer.explainRankByEXirt(model_m1, X_data_train, X_data_test, y_data_train, y_data_test,code_datasets[i],model_name='m1')
+    
+    X_data = X_test.copy(deep=True)
+
+    #explanation by skater
+    print()
+    print('Skater explaning...')
+    df_explanation_analysis['skater_'+i+'_'+j] = explainRankSkater(models[key].copy(), tests[j].copy(deep=True))
+    
+df_explanation_analysis.to_csv('df_explanation_analysis.csc',sep='')
