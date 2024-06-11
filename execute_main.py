@@ -1,4 +1,6 @@
 
+import os
+import wget
 
 #dataset import
 import openml
@@ -15,11 +17,19 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import StratifiedKFold
 
 
+
 #analysis data
 
 from analysis import *
 from explanable_tools import * 
 import pandas as pd
+
+
+if os.path.isfile(os.path.join(os.getcwd(),'decodIRT_MLtIRT.py')) == False:
+                  wget.download('https://raw.githubusercontent.com/josesousaribeiro/eXirt/main/pyexirt/decodIRT_MLtIRT.py')
+
+if os.path.isfile(os.path.join(os.getcwd(),'decodIRT_analysis.py')) == False:
+                  wget.download('https://raw.githubusercontent.com/josesousaribeiro/eXirt/main/pyexirt/decodIRT_analysis.py')
 
 
 seed = 42
@@ -28,7 +38,7 @@ seed = 42
 models = {
           #'mlp': MLPClassifier(verbose=False),
           #'lgbm':lgb.LGBMClassifier(verbosity=-1),
-          #'knn': KNeighborsClassifier(),
+          'knn': KNeighborsClassifier(),
           'dt':tree.DecisionTreeClassifier()
           }
 
@@ -41,7 +51,7 @@ X, Y, categorical_indicator, attribute_names = dataset.get_data(
                   dataset_format="dataframe", target=dataset.default_target_attribute)
 
 
-X = normalize(X)
+X = z_score(X)
 Y = y_as_binary(Y)
 
 
@@ -57,7 +67,8 @@ for key in models:
                    'alpha' : [0.005, 0.01, 0.015],
                    'hidden_layer_sizes': [
                     (5,),(10,),(15,),(5,5,),(5,10),(5,15,),(10,5),(10,10,),(10,15,),(15,5,),(15,10,),(15,15,)
-                  ]}
+                  ]
+    }
   else:
     if key == 'lgbm':
       params_grid =  {'learning_rate': [0.01, 0.015, 0.02],
@@ -86,7 +97,7 @@ for key in models:
 
   # Fit the grid search to the data
   print()
-  print('Apply gridsearch in '+key+'...best models is:')
+  print('Apply gridsearch in '+key+'...best model is:')
   grid_search.fit(X, Y) #execute the cv in all instances of data
   models[key] = grid_search.best_estimator_
   models[key].fit(X_train,y_train) #fit the data with correct train split
@@ -94,14 +105,12 @@ for key in models:
   print()
 #generate perturbed datasets to test
 
+
+
 tests = {
-    'x_test_0%': X_test.copy(),
-    'x_test_1%': apply_perturbation(X_test.copy(deep=True), 0.01, 0),
-    'x_test_2%': apply_perturbation(X_test.copy(deep=True), 0.02, 20),
-    'x_test_3%': apply_perturbation(X_test.copy(deep=True), 0.03, 30),
-    'x_test_4%': apply_perturbation(X_test.copy(deep=True), 0.04, 40),
-    'x_test_5%': apply_perturbation(X_test.copy(deep=True), 0.05, 50),
-    'x_test_50%': apply_perturbation(X_test.copy(deep=True), 0.9, 50)
+    'x_test_original': X_test.copy(),
+    'x_test_20%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.2, 10),
+    'x_test_40%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.4, 20)
     }
 
 df_performance_analysis = pd.DataFrame(index=['accuracy','precision','recall','f1','roc_auc'])
@@ -139,17 +148,17 @@ for i in models:
     #df_explanation_analysis['ciu_'+i+'_'+j] = explainRankNewCiu(models[i], X_train.copy(), y_train.copy(), tests[j].copy(deep=True))
 
     
+    print('Shap explaning...'+i+'_'+j)
+    df_explanation_analysis['shap_'+i+'_'+j] = explainRankByKernelShap(models[i], tests[j].columns, tests[j].copy(deep=True))
+
     print('EXirt explaing...'+i+'_'+j)
-    df_explanation_analysis['eXirt_'+i+'_'+j] = explainRankByEXirt(models[i],X_train,tests[j],y_train, y_test, 'diabetes_'+i)
+    df_explanation_analysis['eXirt_'+i+'_'+j] = explainRankByEXirt(models[i],X_train,tests[j],y_train, y_test, 'diabetes_'+i+'_'+j)
     
     print('Skater explaning...'+i+'_'+j)
     df_explanation_analysis['skater_'+i+'_'+j] = explainRankSkater(models[i], tests[j].copy(deep=True))
 
     print('Eli5 explaning...'+i+'_'+j)
     df_explanation_analysis['eli5_'+i+'_'+j] = explainRankByEli5(models[i], tests[j].copy(deep=True), y_test)
-
-    print('Shap explaning...'+i+'_'+j)
-    df_explanation_analysis['shap_'+i+'_'+j] = explainRankByKernelShap(models[i], tests[j].columns, tests[j].copy(deep=True),is_gradient=(i=='lgbm'))
     
     print('Dalex explaning...'+i+'_'+j)
     df_explanation_analysis['dalex_'+i+'_'+j] = explainRankDalex(models[i],tests[j].copy(deep=True), y_test)

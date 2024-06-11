@@ -1,6 +1,6 @@
 import numpy
 import pandas as pd
-
+import random
 
 
 from sklearn.metrics import accuracy_score
@@ -11,7 +11,27 @@ from sklearn.metrics import roc_auc_score
 from sklearn.metrics import accuracy_score
 
 
-def apply_perturbation(df,percent,seed):
+def apply_perturbation_permute(df,percent,seed):
+  #trocando posições de cada instância do atributo da vez
+  df = df.reset_index()
+  try:
+    df = df.drop('index',axis=1)
+  except:
+     print('')
+  number_of_instances = len(df.index)
+  number_of_instances_perturbed = int(number_of_instances*percent)
+  df_tmp = df.copy(deep=True)
+  for i,c in enumerate(df.columns):
+    random.seed(seed+i)
+    #random_id = random.sample(range(0,number_of_instances_perturbed), number_of_instances_perturbed)
+    random_id = random.choices(list(df.index), k=number_of_instances_perturbed)
+    for j,r in enumerate(random_id):
+      df.at[j,c] = df_tmp.at[r,c]
+      df.at[r,c] = df_tmp.at[j,c]
+
+  return df
+
+def apply_perturbation_noise(df,percent,seed):
   #aplica ruido a cada instâcia do atributo da vez
   number_of_instances = len(df.index)
   for c in df.columns:

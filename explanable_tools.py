@@ -57,17 +57,15 @@ def explainRankByEli5(model, X, Y):
     return rank['Feature'].to_list()
 
 
-def explainRankByKernelShap(model,x_features_names, X,is_gradient=False): # shap.sample(data, K) or shap.kmeans(data, K)
+def explainRankByKernelShap(model,x_features_names, X): # shap.sample(data, K) or shap.kmeans(data, K)
     np.random.seed(0)
     explainer = shap.KernelExplainer(model.predict_proba, X[:],nsamples=len(x_features_names))
     shap_values = explainer.shap_values(X[:])
-    if is_gradient == False:
-        vals= np.abs(shap_values).sum(1)
-    else:
-        vals= np.abs([shap_values]).sum(1) #correction []
+    vals= np.abs(shap_values).mean(0)
     temp_df = pd.DataFrame(list(zip(x_features_names, sum(vals))), columns=['feat_name','shap_value'])
+
     temp_df = temp_df.sort_values(by=['shap_value','feat_name'], ascending=False) #fix problem of equals values of explaination
-    return list(temp_df['feat_name'])
+    return temp_df['feat_name'].to_list()
 
 
 def explainRankByTreeShap(model, x_features_names, X, is_gradient=False):
@@ -77,8 +75,8 @@ def explainRankByTreeShap(model, x_features_names, X, is_gradient=False):
         vals= np.abs(shap_values).mean(0)
     else:
         vals= np.abs([shap_values]).mean(0) #correction []
-        temp_df = pd.DataFrame(list(zip(x_features_names, sum(vals))), columns=['feat_name','shap_value'])
-        temp_df = temp_df.sort_values(by=['shap_value','feat_name'], ascending=False) #fix problem of equals values of explaination
+    temp_df = pd.DataFrame(list(zip(x_features_names, sum(vals))), columns=['feat_name','shap_value'])
+    temp_df = temp_df.sort_values(by=['shap_value','feat_name'], ascending=False) #fix problem of equals values of explaination
 
     return temp_df['feat_name'].to_list()
 
