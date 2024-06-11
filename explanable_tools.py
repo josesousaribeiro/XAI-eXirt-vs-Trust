@@ -3,14 +3,42 @@ import eli5
 import shap
 import dalex as dx
 import ciu
+
+
+
+
+import numpy as np
+import pandas as pd
+
+from pyexirt.eXirt import Explainer
 from eli5.sklearn import PermutationImportance
 from lofo import LOFOImportance, FLOFOImportance, Dataset
 from skater.core.explanations import Interpretation
 from skater.model import InMemoryModel
 
-import numpy as np
-import pandas as pd
 
+from io import StringIO
+from bs4 import BeautifulSoup
+
+
+
+
+def parse_html(box_scores):
+    with open(box_scores) as f: 
+        html = f.read()
+    
+    soup = BeautifulSoup(html, features="lxml")
+    [s.decompose() for s in soup.select("tr.over_header")]
+    [s.decompose() for s in soup.select("tr.theader")]
+    
+    # Use StringIO to wrap the HTML content
+    html_buffer = StringIO(html)
+    return BeautifulSoup(html_buffer, features="lxml")
+
+def explainRankByEXirt(model, X_train, X_test, y_train, y_test, dataset_name_and_model):
+    explainer = Explainer()
+    rank, temp = explainer.explainRankByEXirt(model, X_train, X_test, y_train, y_test, dataset_name_and_model)
+    return rank
 
 def explainRankByLofo(model,X,Y,names_x_attributes):
     df = X.copy()
@@ -23,7 +51,7 @@ def explainRankByLofo(model,X,Y,names_x_attributes):
 
 def explainRankByEli5(model, X, Y):
     perm = PermutationImportance(model, random_state=42).fit(X, Y)
-    rank = eli5.show_weights(perm, feature_names = X.columns.tolist(),top=-1)
+    rank = eli5.show_weights(perm, feature_names = X.columns.tolist())
     rank = pd.read_html(rank.data)[0]
     rank = rank.sort_values(by=['Weight','Feature'], ascending=False) #fix problem of equals values of explaination
     return rank['Feature'].to_list()
@@ -61,6 +89,12 @@ def is_int(n):
       if isinstance(n[i],float):
         return False
     return True
+
+def explainRankNewCiu(model, X_train, y_train, X_test):
+    out_minmaxs = pd.DataFrame({'mins': [min(y_train)], 'maxs': max(y_train)})
+    CIU = ciu.CIU(model.predict, ['Price'], data=X_train, out_minmaxs=out_minmaxs)
+    CIUres = CIU.explain_all(X_test, do_norm_invals=True)
+    print(CIUres)
 
 def create_dic_ciu(X):
     attribute_names = X.columns

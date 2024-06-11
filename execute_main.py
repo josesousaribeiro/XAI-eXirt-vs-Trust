@@ -26,9 +26,9 @@ seed = 42
 
 #initialize models
 models = {
-          'mlp': MLPClassifier(verbose=False),
-          'lgbm':lgb.LGBMClassifier(verbosity=-1),
-          'knn': KNeighborsClassifier(),
+          #'mlp': MLPClassifier(verbose=False),
+          #'lgbm':lgb.LGBMClassifier(verbosity=-1),
+          #'knn': KNeighborsClassifier(),
           'dt':tree.DecisionTreeClassifier()
           }
 
@@ -41,7 +41,7 @@ X, Y, categorical_indicator, attribute_names = dataset.get_data(
                   dataset_format="dataframe", target=dataset.default_target_attribute)
 
 
-X = z_score(X)
+X = normalize(X)
 Y = y_as_binary(Y)
 
 
@@ -100,7 +100,8 @@ tests = {
     'x_test_2%': apply_perturbation(X_test.copy(deep=True), 0.02, 20),
     'x_test_3%': apply_perturbation(X_test.copy(deep=True), 0.03, 30),
     'x_test_4%': apply_perturbation(X_test.copy(deep=True), 0.04, 40),
-    'x_test_5%': apply_perturbation(X_test.copy(deep=True), 0.05, 50)
+    'x_test_5%': apply_perturbation(X_test.copy(deep=True), 0.05, 50),
+    'x_test_50%': apply_perturbation(X_test.copy(deep=True), 0.9, 50)
     }
 
 df_performance_analysis = pd.DataFrame(index=['accuracy','precision','recall','f1','roc_auc'])
@@ -133,7 +134,14 @@ for i in models:
     X_data = X_test.copy(deep=True)
 
     #explanation by skater
-    print()
+
+    #print('ciu explaning...'+i+'_'+j)
+    #df_explanation_analysis['ciu_'+i+'_'+j] = explainRankNewCiu(models[i], X_train.copy(), y_train.copy(), tests[j].copy(deep=True))
+
+    
+    print('EXirt explaing...'+i+'_'+j)
+    df_explanation_analysis['eXirt_'+i+'_'+j] = explainRankByEXirt(models[i],X_train,tests[j],y_train, y_test, 'diabetes_'+i)
+    
     print('Skater explaning...'+i+'_'+j)
     df_explanation_analysis['skater_'+i+'_'+j] = explainRankSkater(models[i], tests[j].copy(deep=True))
 
@@ -149,8 +157,7 @@ for i in models:
     print('Lofo explaning...'+i+'_'+j)
     df_explanation_analysis['lofo_'+i+'_'+j] = explainRankByLofo(models[i], tests[j].copy(deep=True), y_test, tests[j].columns)
 
-    #print('ciu explaning...'+i+'_'+j)
-    #df_explanation_analysis['ciu_'+i+'_'+j] = explainRankByCiu(models[i], tests[j], tests[j].columns,create_dic_ciu(X),'ci')
+    
 
     #eXirt
     
