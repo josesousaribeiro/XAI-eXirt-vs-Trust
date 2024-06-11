@@ -21,7 +21,7 @@ from sklearn.model_selection import StratifiedKFold
 #analysis data
 
 from analysis import *
-from explanable_tools import * 
+from explanable_tools import explainRankByEli5, explainRankByEXirt, explainRankByKernelShap, explainRankByLofo, explainRankDalex, explainRankSkater  
 import pandas as pd
 
 
@@ -36,8 +36,8 @@ seed = 42
 
 #initialize models
 models = {
-          #'mlp': MLPClassifier(verbose=False),
-          #'lgbm':lgb.LGBMClassifier(verbosity=-1),
+          'mlp': MLPClassifier(verbose=False),
+          'lgbm':lgb.LGBMClassifier(verbosity=-1),
           'knn': KNeighborsClassifier(),
           'dt':tree.DecisionTreeClassifier()
           }
