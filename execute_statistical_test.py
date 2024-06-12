@@ -6,9 +6,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from scipy import stats
- 
+import util
 
-df = pd.read_csv('df_performance_analysis.csv',sep=',',index_col=0)
+bar = util.bar_system()
+
+df = pd.read_csv('.'+bar+'output'+bar+'csv'+bar+'df_performance_analysis.csv',sep=',',index_col=0)
 
 print('Dataframe a ser analisado:')
 print(df)
@@ -47,4 +49,4 @@ print(df_matrix)
 plt.margins(10)
 ax = sns.heatmap(df_matrix, vmin=0, vmax=1, xticklabels=columns,yticklabels=columns,cmap="Greens",linewidths=.5,annot=True,fmt='.2f', annot_kws={"fontsize":8})
 plt.tight_layout()
-plt.savefig('statistical_test.png')
+plt.savefig('.'+bar+'output'+bar+'fig'+bar+'statistical_test.png')

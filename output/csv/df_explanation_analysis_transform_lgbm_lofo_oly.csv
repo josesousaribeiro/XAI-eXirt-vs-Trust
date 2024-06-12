@@ -1,0 +1,9 @@
+index,lofo_lgbm_x_test_original,lofo_lgbm_x_test_20%_permute,lofo_lgbm_x_test_40%_permute
+age,0,0,2
+plas,1,1,1
+pedi,2,7,7
+pres,3,2,3
+preg,4,6,6
+skin,5,4,5
+mass,6,3,0
+insu,7,5,4

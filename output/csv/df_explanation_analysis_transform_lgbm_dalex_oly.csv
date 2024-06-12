@@ -1,0 +1,9 @@
+index,dalex_lgbm_x_test_original,dalex_lgbm_x_test_20%_permute,dalex_lgbm_x_test_40%_permute
+plas,0,0,0
+mass,1,1,1
+age,2,5,2
+pedi,3,4,7
+insu,4,3,4
+preg,5,2,3
+pres,6,6,6
+skin,7,7,5

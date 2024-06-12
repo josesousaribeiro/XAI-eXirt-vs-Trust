@@ -1,0 +1,9 @@
+index,eli5_knn_x_test_original,eli5_knn_x_test_20%_permute,eli5_knn_x_test_40%_permute
+plas,0,0,0
+mass,1,5,3
+age,2,6,1
+pres,3,4,6
+preg,4,1,2
+pedi,5,2,5
+insu,6,7,7
+skin,7,3,4

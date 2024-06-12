@@ -1,0 +1,9 @@
+index,shap_dt_x_test_original,shap_dt_x_test_20%_permute,shap_dt_x_test_40%_permute
+mass,0,0,0
+plas,1,1,1
+age,2,2,2
+preg,3,3,3
+skin,4,4,4
+insu,5,5,5
+pres,6,6,6
+pedi,7,7,7

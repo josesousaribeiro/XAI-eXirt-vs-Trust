@@ -4,6 +4,7 @@ import wget
 
 #dataset import
 import openml
+import util
 
 #models imports
 import lightgbm as lgb
@@ -31,6 +32,8 @@ if os.path.isfile(os.path.join(os.getcwd(),'decodIRT_MLtIRT.py')) == False:
 if os.path.isfile(os.path.join(os.getcwd(),'decodIRT_analysis.py')) == False:
                   wget.download('https://raw.githubusercontent.com/josesousaribeiro/eXirt/main/pyexirt/decodIRT_analysis.py')
 
+
+bar = util.bar_system()
 
 seed = 42
 
@@ -78,10 +81,10 @@ for key in models:
                       'colsample_bytree': [0.7, 1]}
     else:
       if key == 'knn':
-        params_grid = {'leaf_size': [1, 10, 20, 40, 50],
+        params_grid = {'leaf_size': [5, 10, 20, 40, 50],
                       'algorithm': ['ball_tree', 'kd_tree', 'brute'],
                       'metric': ['minkowski','cityblock','euclidean'],
-                      'n_neighbors': [2, 4, 6, 8, 10, 12, 14, 16]}
+                      'n_neighbors': [2, 4, 6, 8, 10, 12]}
       else:
         if key == 'dt':
           params_grid = {'min_samples_leaf': [1, 10, 20],
@@ -128,7 +131,7 @@ for i in models:
     df_performance_analysis.at['roc_auc',i+'_'+j] = round(roc_auc,3)
 
 print(df_performance_analysis)
-df_performance_analysis.to_csv('df_performance_analysis.csv',sep=',')
+df_performance_analysis.to_csv('.'+bar+'output'+bar+'df_performance_analysis.csv',sep=',')
 
 
 df_explanation_analysis = pd.DataFrame()
@@ -170,4 +173,4 @@ for i in models:
 
     #eXirt
     
-df_explanation_analysis.to_csv('df_explanation_analysis.csv',sep=',')
+df_explanation_analysis.to_csv('.'+bar+'output'+bar+'csv'+bar+'df_explanation_analysis.csv',sep=',')

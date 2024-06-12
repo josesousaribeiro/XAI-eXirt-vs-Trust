@@ -1,0 +1,9 @@
+index,lofo_knn_x_test_original,lofo_knn_x_test_20%_permute,lofo_knn_x_test_40%_permute
+plas,0,3,3
+pedi,1,5,0
+insu,2,4,4
+mass,3,6,7
+pres,4,2,1
+age,5,1,5
+skin,6,7,6
+preg,7,0,2
