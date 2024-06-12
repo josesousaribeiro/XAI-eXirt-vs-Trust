@@ -4,3 +4,4 @@ ipython
 eli5
 lxml
 bs4
+scikit_posthocs
