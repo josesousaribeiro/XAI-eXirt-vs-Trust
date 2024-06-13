@@ -113,7 +113,8 @@ for key in models:
 tests = {
     'x_test_original': X_test.copy(),
     'x_test_20%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.2, 10),
-    'x_test_40%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.4, 20)
+    'x_test_40%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.4, 20),
+    'x_test_60%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.6, 30)
     }
 
 df_performance_analysis = pd.DataFrame(index=['accuracy','precision','recall','f1','roc_auc'])
