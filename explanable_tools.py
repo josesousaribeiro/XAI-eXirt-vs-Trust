@@ -88,11 +88,12 @@ def is_int(n):
         return False
     return True
 
-def explainRankNewCiu(model, X_train, y_train, X_test):
-    out_minmaxs = pd.DataFrame({'mins': [min(y_train)], 'maxs': max(y_train)})
-    CIU = ciu.CIU(model.predict, ['Price'], data=X_train, out_minmaxs=out_minmaxs)
+def explainRankNewCiu(model,X, X_train, y_train, X_test):
+    out_minmaxs = create_dic_ciu(X)
+    CIU = ciu.CIU(model.predict, ['0','1'], data=X_train, out_minmaxs=out_minmaxs)
     CIUres = CIU.explain_all(X_test, do_norm_invals=True)
     print(CIUres)
+
 
 def create_dic_ciu(X):
     attribute_names = X.columns

@@ -20,15 +20,18 @@ df = df[[
          'lgbm_x_test_original',
          'knn_x_test_original',
          'dt_x_test_original',
-
-         'mlp_x_test_20%_permute',
-         'lgbm_x_test_20%_permute',
-         'knn_x_test_20%_permute',
+         'mlp_x_test_10%_permute',
+         'lgbm_x_test_10%_permute',
+         'knn_x_test_10%_permute',
+         'dt_x_test_10%_permute',
+         'mlp_x_test_20%_permute',         
+         'lgbm_x_test_20%_permute',      
+         'knn_x_test_20%_permute',        
          'dt_x_test_20%_permute',
-         'mlp_x_test_40%_permute',         
-         'lgbm_x_test_40%_permute',      
-         'knn_x_test_40%_permute',        
-         'dt_x_test_40%_permute'
+         'mlp_x_test_30%_permute',         
+         'lgbm_x_test_30%_permute',      
+         'knn_x_test_30%_permute',        
+         'dt_x_test_30%_permute'
          ]]
 columns = df.columns
 df_values = df.values.transpose()

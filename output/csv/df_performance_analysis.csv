@@ -1,6 +1,6 @@
-,mlp_x_test_original,mlp_x_test_20%_permute,mlp_x_test_40%_permute,lgbm_x_test_original,lgbm_x_test_20%_permute,lgbm_x_test_40%_permute,knn_x_test_original,knn_x_test_20%_permute,knn_x_test_40%_permute,dt_x_test_original,dt_x_test_20%_permute,dt_x_test_40%_permute
-accuracy,0.758,0.693,0.641,0.762,0.693,0.641,0.753,0.662,0.693,0.749,0.675,0.654
-precision,0.705,0.578,0.486,0.697,0.586,0.484,0.731,0.537,0.593,0.683,0.548,0.507
-recall,0.531,0.457,0.42,0.568,0.42,0.383,0.469,0.272,0.395,0.531,0.42,0.42
-f1,0.606,0.51,0.45,0.626,0.489,0.428,0.571,0.361,0.474,0.597,0.476,0.459
-roc_auc,0.705,0.638,0.59,0.717,0.63,0.581,0.688,0.572,0.624,0.699,0.617,0.6
+,dt_x_test_original,dt_x_test_10%_permute,dt_x_test_20%_permute,dt_x_test_30%_permute
+accuracy,0.732,0.697,0.701,0.701
+precision,0.686,0.617,0.625,0.636
+recall,0.432,0.358,0.37,0.346
+f1,0.53,0.453,0.465,0.448
+roc_auc,0.663,0.619,0.625,0.62

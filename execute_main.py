@@ -22,7 +22,7 @@ from sklearn.model_selection import StratifiedKFold
 #analysis data
 
 from analysis import *
-from explanable_tools import explainRankByEli5, explainRankByEXirt, explainRankByKernelShap, explainRankByLofo, explainRankDalex, explainRankSkater  
+from explanable_tools import explainRankByEli5, explainRankByEXirt, explainRankByKernelShap, explainRankByLofo, explainRankDalex, explainRankSkater, explainRankNewCiu
 import pandas as pd
 
 
@@ -39,9 +39,9 @@ seed = 42
 
 #initialize models
 models = {
-          'mlp': MLPClassifier(verbose=False),
-          'lgbm':lgb.LGBMClassifier(verbosity=-1),
-          'knn': KNeighborsClassifier(),
+          #'mlp': MLPClassifier(verbose=False),
+          #'lgbm':lgb.LGBMClassifier(verbosity=-1),
+          #'knn': KNeighborsClassifier(),
           'dt':tree.DecisionTreeClassifier()
           }
 
@@ -58,7 +58,7 @@ X = z_score(X)
 Y = y_as_binary(Y)
 
 
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, stratify=Y, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, stratify=Y, random_state=seed)
 
 
 #tunning models
@@ -112,9 +112,9 @@ for key in models:
 
 tests = {
     'x_test_original': X_test.copy(),
-    'x_test_20%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.2, 10),
-    'x_test_40%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.4, 20),
-    'x_test_60%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.6, 30)
+    'x_test_10%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.1, 10),
+    'x_test_20%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.2, 20),
+    'x_test_30%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.3, 30)
     }
 
 df_performance_analysis = pd.DataFrame(index=['accuracy','precision','recall','f1','roc_auc'])
@@ -132,7 +132,7 @@ for i in models:
     df_performance_analysis.at['roc_auc',i+'_'+j] = round(roc_auc,3)
 
 print(df_performance_analysis)
-df_performance_analysis.to_csv('.'+bar+'output'+bar+'df_performance_analysis.csv',sep=',')
+df_performance_analysis.to_csv('.'+bar+'output'+bar+'csv'+bar+'df_performance_analysis.csv',sep=',')
 
 
 df_explanation_analysis = pd.DataFrame()
@@ -149,7 +149,7 @@ for i in models:
     #explanation by skater
 
     #print('ciu explaning...'+i+'_'+j)
-    #df_explanation_analysis['ciu_'+i+'_'+j] = explainRankNewCiu(models[i], X_train.copy(), y_train.copy(), tests[j].copy(deep=True))
+    #df_explanation_analysis['ciu_'+i+'_'+j] = explainRankNewCiu(models[i],X, X_train.copy(), y_train.copy(), tests[j].copy(deep=True))
 
     
     print('Shap explaning...'+i+'_'+j)
