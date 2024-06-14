@@ -1,9 +1,9 @@
-index,eXirt_lgbm_x_test_original,eXirt_lgbm_x_test_20%_permute,eXirt_lgbm_x_test_40%_permute,eXirt_lgbm_x_test_60%_permute
-plas,0,0,1,0
-mass,1,1,2,1
-pedi,2,2,0,2
-age,3,3,3,3
-preg,4,4,4,4
-insu,5,5,5,5
+index,eXirt_lgbm_x_test_original,eXirt_lgbm_x_test_10%_permute,eXirt_lgbm_x_test_20%_permute,eXirt_lgbm_x_test_30%_permute
+plas,0,0,0,0
+mass,1,1,1,1
+pedi,2,2,4,3
+age,3,3,2,2
+preg,4,4,5,4
+insu,5,5,3,5
 pres,6,6,6,6
 skin,7,7,7,7

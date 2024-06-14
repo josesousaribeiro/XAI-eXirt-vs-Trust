@@ -1,9 +1,9 @@
-index,dalex_dt_x_test_original,dalex_dt_x_test_20%_permute,dalex_dt_x_test_40%_permute,dalex_dt_x_test_60%_permute
+index,dalex_dt_x_test_original,dalex_dt_x_test_10%_permute,dalex_dt_x_test_20%_permute,dalex_dt_x_test_30%_permute
 plas,0,0,0,0
-age,1,1,1,1
-insu,2,2,2,7
-preg,3,3,4,4
-pedi,4,4,3,2
-skin,5,5,5,5
-pres,6,6,6,6
-mass,7,7,7,3
+preg,1,4,1,1
+age,2,1,2,2
+mass,3,3,6,3
+pedi,4,7,7,4
+pres,5,2,5,5
+skin,6,5,4,7
+insu,7,6,3,6

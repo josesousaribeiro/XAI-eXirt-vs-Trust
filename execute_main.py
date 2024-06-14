@@ -39,9 +39,9 @@ seed = 42
 
 #initialize models
 models = {
-          #'mlp': MLPClassifier(verbose=False),
-          #'lgbm':lgb.LGBMClassifier(verbosity=-1),
-          #'knn': KNeighborsClassifier(),
+          'mlp': MLPClassifier(verbose=False),
+          'lgbm':lgb.LGBMClassifier(verbosity=-1),
+          'knn': KNeighborsClassifier(),
           'dt':tree.DecisionTreeClassifier()
           }
 

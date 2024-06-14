@@ -1,4 +1,4 @@
-index,shap_lgbm_x_test_original,shap_lgbm_x_test_20%_permute,shap_lgbm_x_test_40%_permute,shap_lgbm_x_test_60%_permute
+index,shap_lgbm_x_test_original,shap_lgbm_x_test_10%_permute,shap_lgbm_x_test_20%_permute,shap_lgbm_x_test_30%_permute
 plas,0,0,0,0
 mass,1,1,1,1
 age,2,2,2,2

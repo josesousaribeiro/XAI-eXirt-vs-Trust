@@ -1,9 +1,9 @@
-index,eXirt_dt_x_test_original,eXirt_dt_x_test_20%_permute,eXirt_dt_x_test_40%_permute,eXirt_dt_x_test_60%_permute
+index,eXirt_dt_x_test_original,eXirt_dt_x_test_10%_permute,eXirt_dt_x_test_20%_permute,eXirt_dt_x_test_30%_permute
 plas,0,0,0,0
-age,1,1,1,1
-preg,2,2,2,2
-pres,3,3,3,3
-skin,4,4,4,4
-insu,5,5,5,5
-mass,6,6,6,6
-pedi,7,7,7,7
+pedi,1,4,4,1
+mass,2,5,5,3
+preg,3,1,1,2
+age,4,2,2,4
+insu,5,3,3,5
+pres,6,6,6,6
+skin,7,7,7,7
