@@ -1,9 +1,0 @@
-index,eXirt_mlp_x_test_20%_permute,shap_mlp_x_test_20%_permute,skater_mlp_x_test_20%_permute,eli5_mlp_x_test_20%_permute,dalex_mlp_x_test_20%_permute
-plas,0,0,0,0,0
-mass,1,2,2,2,3
-pres,2,5,5,4,4
-preg,3,1,1,1,1
-skin,4,7,7,6,6
-pedi,5,3,3,7,2
-insu,6,4,4,3,7
-age,7,6,6,5,5

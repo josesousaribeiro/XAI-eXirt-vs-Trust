@@ -24,7 +24,8 @@ def apply_perturbation_permute(df,percent,seed):
   for i,c in enumerate(df.columns):
     random.seed(seed+i)
     #random_id = random.sample(range(0,number_of_instances_perturbed), number_of_instances_perturbed)
-    random_id = random.choices(list(df.index), k=number_of_instances_perturbed)
+    random_id = random.sample(list(df.index), k=number_of_instances_perturbed)
+
     for j,r in enumerate(random_id):
       df.at[j,c] = df_tmp.at[r,c]
       df.at[r,c] = df_tmp.at[j,c]

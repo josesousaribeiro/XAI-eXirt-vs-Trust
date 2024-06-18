@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 import util
 
+from scipy import stats
+
 bar = util.bar_system()
 def bumpchart(df, show_rank_axis= True, rank_axis_distance= 1.1, 
               ax= None, scatter= False, holes= False,
@@ -93,6 +95,16 @@ def plotBumpChart(df_features_rank_copy,model,test,color_dic=None):
     plt.figure(figsize=(3.5, 3),dpi=300)
     plt.xticks(fontsize=8,rotation=90)
     plt.tight_layout(pad=4)
+    plt.ylabel('Relevance Rank',fontsize=8)
+    sum_corr = 0
+    for i,c in enumerate(df_features_rank_copy.columns):
+        original = df_features_rank_copy.iloc[:,0] #ranque original
+        if i > 0:
+            rank = list(df_features_rank_copy[c])
+            corr, p = stats.spearmanr(original, rank )
+            sum_corr = sum_corr + corr
+            plt.text(i-1+0.66, 8.1, 'c:'+str(round(corr,2)),fontsize=6)
+    plt.title('Sum of correlations (c): '+str(round(sum_corr,2)),fontsize=9)
     
     df_transformed = retornRankPositions(df_features_rank_copy)
     df_transformed.to_csv('.'+bar+'output'+bar+'csv'+bar+'df_explanation_analysis_transform_'+model+'_'+test+'.csv',sep=',')
@@ -127,7 +139,7 @@ model = 'mlp'
 test = 'exirt_oly'
 df_tmp = df[['eXirt_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_5%_permute', 'eXirt_'+model+'_x_test_10%_permute', 'eXirt_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
-plt.text(0, 0, 'Corr: '+str(3.23), fontdict=8)
+
 
 model = 'lgbm'
 test = 'exirt_oly'

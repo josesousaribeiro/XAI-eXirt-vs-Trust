@@ -1,9 +1,0 @@
-index,eXirt_knn_x_test_20%_permute,shap_knn_x_test_20%_permute,skater_knn_x_test_20%_permute,eli5_knn_x_test_20%_permute,dalex_knn_x_test_20%_permute
-plas,0,0,0,0,0
-pedi,1,4,5,2,4
-age,2,1,1,6,3
-mass,3,2,3,5,1
-preg,4,3,2,1,2
-skin,5,5,4,3,5
-insu,6,7,7,7,7
-pres,7,6,6,4,6

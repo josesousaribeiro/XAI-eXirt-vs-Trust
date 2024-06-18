@@ -1,9 +1,0 @@
-index,eli5_mlp_x_test_original,eli5_mlp_x_test_5%_permute,eli5_mlp_x_test_10%_permute,eli5_mlp_x_test_15%_permute
-plas,0,0,0,0
-preg,1,1,1,1
-mass,2,2,3,3
-age,3,4,2,2
-pres,4,5,7,4
-pedi,5,3,6,5
-insu,6,6,5,7
-skin,7,7,4,6

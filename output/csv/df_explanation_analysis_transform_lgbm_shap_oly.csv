@@ -1,9 +1,0 @@
-index,shap_lgbm_x_test_original,shap_lgbm_x_test_5%_permute,shap_lgbm_x_test_10%_permute,shap_lgbm_x_test_15%_permute
-plas,0,0,0,0
-mass,1,1,1,1
-age,2,2,2,2
-preg,3,4,4,3
-pedi,4,3,3,4
-insu,5,5,5,5
-pres,6,6,6,6
-skin,7,7,7,7

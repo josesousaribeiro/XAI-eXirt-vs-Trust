@@ -1,9 +1,0 @@
-index,eXirt_knn_x_test_original,shap_knn_x_test_original,skater_knn_x_test_original,eli5_knn_x_test_original,dalex_knn_x_test_original
-plas,0,0,0,0,0
-age,1,1,1,2,2
-skin,2,5,5,7,7
-pedi,3,4,4,5,3
-mass,4,2,2,1,1
-insu,5,7,7,6,6
-pres,6,6,6,3,5
-preg,7,3,3,4,4

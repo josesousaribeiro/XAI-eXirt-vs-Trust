@@ -65,7 +65,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, stratif
 for key in models:
   if key == 'mlp':
     params_grid = {'max_iter' : [3000],
-                   'activation' : ['identity', 'logistic', 'tanh', 'relu'],
+                   'activation' : ['sigmoid','identity', 'logistic', 'tanh', 'relu'],
                    'solver' : ['sgd', 'adam'],
                    'alpha' : [0.005, 0.01, 0.015],
                    'hidden_layer_sizes': [
@@ -112,9 +112,27 @@ for key in models:
 
 tests = {
     'x_test_original': X_test.copy(),
-    'x_test_5%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.05, 10),
-    'x_test_10%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.10, 20),
-    'x_test_15%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.15, 30)
+    'x_test_1%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.01, 10),
+    'x_test_2%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.02, 20),
+    'x_test_3%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.03, 30),
+    'x_test_4%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.04, 40),
+    'x_test_5%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.05, 50),
+    'x_test_6%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.06, 60),
+    'x_test_7%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.07, 70),
+    'x_test_8%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.08, 80),
+    'x_test_9%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.09, 90),
+    'x_test_10%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.10, 100),
+    'x_test_11%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.11, 110),
+    'x_test_12%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.12, 120),
+    'x_test_13%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.13, 130),
+    'x_test_14%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.14, 140),
+    'x_test_15%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.15, 150),
+    'x_test_16%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.16, 160),
+    'x_test_17%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.17, 170),
+    'x_test_18%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.18, 180),
+    'x_test_19%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.19, 190),
+    'x_test_20%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.20, 200),
+
     }
 
 df_performance_analysis = pd.DataFrame(index=['accuracy','precision','recall','f1','roc_auc'])
@@ -156,7 +174,7 @@ for i in models:
     df_explanation_analysis['shap_'+i+'_'+j] = explainRankByKernelShap(models[i], tests[j].columns, tests[j].copy(deep=True))
 
     print('EXirt explaing...'+i+'_'+j)
-    df_explanation_analysis['eXirt_'+i+'_'+j] = explainRankByEXirt(models[i],X_train,tests[j],y_train, y_test, 'diabetes_'+i+'_'+j)
+    df_explanation_analysis['eXirt_'+i+'_'+j] = explainRankByEXirt(models[i],X_train,tests[j].copy(deep=True),y_train, y_test, 'diabetes_'+i+'_'+j)
     
     print('Skater explaning...'+i+'_'+j)
     df_explanation_analysis['skater_'+i+'_'+j] = explainRankSkater(models[i], tests[j].copy(deep=True))

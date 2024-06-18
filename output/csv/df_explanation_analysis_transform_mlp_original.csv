@@ -1,9 +1,0 @@
-index,eXirt_mlp_x_test_original,shap_mlp_x_test_original,skater_mlp_x_test_original,eli5_mlp_x_test_original,dalex_mlp_x_test_original
-mass,0,2,2,2,2
-plas,1,0,0,0,0
-pedi,2,3,3,4,3
-preg,3,1,1,1,1
-age,4,6,6,6,7
-skin,5,7,7,7,6
-insu,6,4,4,3,4
-pres,7,5,5,5,5
