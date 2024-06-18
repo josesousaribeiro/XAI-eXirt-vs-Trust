@@ -125,22 +125,22 @@ color_dic = {'mass':'#ff7f0e', 'plas':'#ec96aa', 'pedi':'#aec7e8', 'preg':'#ffbb
 
 model = 'mlp'
 test = 'exirt_oly'
-df_tmp = df[['eXirt_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_10%_permute', 'eXirt_'+model+'_x_test_20%_permute', 'eXirt_'+model+'_x_test_30%_permute']]
+df_tmp = df[['eXirt_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_5%_permute', 'eXirt_'+model+'_x_test_10%_permute', 'eXirt_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'lgbm'
 test = 'exirt_oly'
-df_tmp = df[['eXirt_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_10%_permute', 'eXirt_'+model+'_x_test_20%_permute', 'eXirt_'+model+'_x_test_30%_permute']]
+df_tmp = df[['eXirt_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_5%_permute', 'eXirt_'+model+'_x_test_10%_permute', 'eXirt_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'knn'
 test = 'exirt_oly'
-df_tmp = df[['eXirt_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_10%_permute', 'eXirt_'+model+'_x_test_20%_permute', 'eXirt_'+model+'_x_test_30%_permute']]
+df_tmp = df[['eXirt_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_5%_permute', 'eXirt_'+model+'_x_test_10%_permute', 'eXirt_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'dt'
 test = 'exirt_oly'
-df_tmp = df[['eXirt_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_10%_permute', 'eXirt_'+model+'_x_test_20%_permute', 'eXirt_'+model+'_x_test_30%_permute']]
+df_tmp = df[['eXirt_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_5%_permute', 'eXirt_'+model+'_x_test_10%_permute', 'eXirt_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 
@@ -148,22 +148,22 @@ plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'mlp'
 test = 'shap_oly'
-df_tmp = df[['shap_'+model+'_x_test_original', 'shap_'+model+'_x_test_10%_permute', 'shap_'+model+'_x_test_20%_permute', 'shap_'+model+'_x_test_30%_permute']]
+df_tmp = df[['shap_'+model+'_x_test_original', 'shap_'+model+'_x_test_5%_permute', 'shap_'+model+'_x_test_10%_permute', 'shap_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'lgbm'
 test = 'shap_oly'
-df_tmp = df[['shap_'+model+'_x_test_original', 'shap_'+model+'_x_test_10%_permute', 'shap_'+model+'_x_test_20%_permute', 'shap_'+model+'_x_test_30%_permute']]
+df_tmp = df[['shap_'+model+'_x_test_original', 'shap_'+model+'_x_test_5%_permute', 'shap_'+model+'_x_test_10%_permute', 'shap_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'knn'
 test = 'shap_oly'
-df_tmp = df[['shap_'+model+'_x_test_original', 'shap_'+model+'_x_test_10%_permute', 'shap_'+model+'_x_test_20%_permute', 'shap_'+model+'_x_test_30%_permute']]
+df_tmp = df[['shap_'+model+'_x_test_original', 'shap_'+model+'_x_test_5%_permute', 'shap_'+model+'_x_test_10%_permute', 'shap_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'dt'
 test = 'shap_oly'
-df_tmp = df[['shap_'+model+'_x_test_original', 'shap_'+model+'_x_test_10%_permute', 'shap_'+model+'_x_test_20%_permute', 'shap_'+model+'_x_test_30%_permute']]
+df_tmp = df[['shap_'+model+'_x_test_original', 'shap_'+model+'_x_test_5%_permute', 'shap_'+model+'_x_test_10%_permute', 'shap_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 
@@ -171,22 +171,22 @@ plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'mlp'
 test = 'eli5_oly'
-df_tmp = df[['eli5_'+model+'_x_test_original', 'eli5_'+model+'_x_test_10%_permute', 'eli5_'+model+'_x_test_20%_permute', 'eli5_'+model+'_x_test_30%_permute']]
+df_tmp = df[['eli5_'+model+'_x_test_original', 'eli5_'+model+'_x_test_5%_permute', 'eli5_'+model+'_x_test_10%_permute', 'eli5_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'lgbm'
 test = 'eli5_oly'
-df_tmp = df[['eli5_'+model+'_x_test_original', 'eli5_'+model+'_x_test_10%_permute', 'eli5_'+model+'_x_test_20%_permute', 'eli5_'+model+'_x_test_30%_permute']]
+df_tmp = df[['eli5_'+model+'_x_test_original', 'eli5_'+model+'_x_test_5%_permute', 'eli5_'+model+'_x_test_10%_permute', 'eli5_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'knn'
 test = 'eli5_oly'
-df_tmp = df[['eli5_'+model+'_x_test_original', 'eli5_'+model+'_x_test_10%_permute', 'eli5_'+model+'_x_test_20%_permute', 'eli5_'+model+'_x_test_30%_permute']]
+df_tmp = df[['eli5_'+model+'_x_test_original', 'eli5_'+model+'_x_test_5%_permute', 'eli5_'+model+'_x_test_10%_permute', 'eli5_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'dt'
 test = 'eli5_oly'
-df_tmp = df[['eli5_'+model+'_x_test_original', 'eli5_'+model+'_x_test_10%_permute', 'eli5_'+model+'_x_test_20%_permute', 'eli5_'+model+'_x_test_30%_permute']]
+df_tmp = df[['eli5_'+model+'_x_test_original', 'eli5_'+model+'_x_test_5%_permute', 'eli5_'+model+'_x_test_10%_permute', 'eli5_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 
@@ -195,22 +195,22 @@ plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'mlp'
 test = 'dalex_oly'
-df_tmp = df[['dalex_'+model+'_x_test_original', 'dalex_'+model+'_x_test_10%_permute', 'dalex_'+model+'_x_test_20%_permute', 'dalex_'+model+'_x_test_30%_permute']]
+df_tmp = df[['dalex_'+model+'_x_test_original', 'dalex_'+model+'_x_test_5%_permute', 'dalex_'+model+'_x_test_10%_permute', 'dalex_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'lgbm'
 test = 'dalex_oly'
-df_tmp = df[['dalex_'+model+'_x_test_original', 'dalex_'+model+'_x_test_10%_permute', 'dalex_'+model+'_x_test_20%_permute', 'dalex_'+model+'_x_test_30%_permute']]
+df_tmp = df[['dalex_'+model+'_x_test_original', 'dalex_'+model+'_x_test_5%_permute', 'dalex_'+model+'_x_test_10%_permute', 'dalex_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'knn'
 test = 'dalex_oly'
-df_tmp = df[['dalex_'+model+'_x_test_original', 'dalex_'+model+'_x_test_10%_permute', 'dalex_'+model+'_x_test_20%_permute', 'dalex_'+model+'_x_test_30%_permute']]
+df_tmp = df[['dalex_'+model+'_x_test_original', 'dalex_'+model+'_x_test_5%_permute', 'dalex_'+model+'_x_test_10%_permute', 'dalex_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'dt'
 test = 'dalex_oly'
-df_tmp = df[['dalex_'+model+'_x_test_original', 'dalex_'+model+'_x_test_10%_permute', 'dalex_'+model+'_x_test_20%_permute', 'dalex_'+model+'_x_test_30%_permute']]
+df_tmp = df[['dalex_'+model+'_x_test_original', 'dalex_'+model+'_x_test_5%_permute', 'dalex_'+model+'_x_test_10%_permute', 'dalex_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 
@@ -218,21 +218,21 @@ plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'mlp'
 test = 'lofo_oly'
-df_tmp = df[['lofo_'+model+'_x_test_original', 'lofo_'+model+'_x_test_10%_permute', 'lofo_'+model+'_x_test_20%_permute', 'lofo_'+model+'_x_test_30%_permute']]
+df_tmp = df[['lofo_'+model+'_x_test_original', 'lofo_'+model+'_x_test_5%_permute', 'lofo_'+model+'_x_test_10%_permute', 'lofo_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'lgbm'
 test = 'lofo_oly'
-df_tmp = df[['lofo_'+model+'_x_test_original', 'lofo_'+model+'_x_test_10%_permute', 'lofo_'+model+'_x_test_20%_permute', 'lofo_'+model+'_x_test_30%_permute']]
+df_tmp = df[['lofo_'+model+'_x_test_original', 'lofo_'+model+'_x_test_5%_permute', 'lofo_'+model+'_x_test_10%_permute', 'lofo_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'knn'
 test = 'lofo_oly'
-df_tmp = df[['lofo_'+model+'_x_test_original', 'lofo_'+model+'_x_test_10%_permute', 'lofo_'+model+'_x_test_20%_permute', 'lofo_'+model+'_x_test_30%_permute']]
+df_tmp = df[['lofo_'+model+'_x_test_original', 'lofo_'+model+'_x_test_5%_permute', 'lofo_'+model+'_x_test_10%_permute', 'lofo_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 
 model = 'dt'
 test = 'lofo_oly'
-df_tmp = df[['lofo_'+model+'_x_test_original', 'lofo_'+model+'_x_test_10%_permute', 'lofo_'+model+'_x_test_20%_permute', 'lofo_'+model+'_x_test_30%_permute']]
+df_tmp = df[['lofo_'+model+'_x_test_original', 'lofo_'+model+'_x_test_5%_permute', 'lofo_'+model+'_x_test_10%_permute', 'lofo_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
 

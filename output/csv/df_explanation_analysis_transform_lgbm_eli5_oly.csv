@@ -1,9 +1,9 @@
-index,eli5_lgbm_x_test_original,eli5_lgbm_x_test_10%_permute,eli5_lgbm_x_test_20%_permute,eli5_lgbm_x_test_30%_permute
+index,eli5_lgbm_x_test_original,eli5_lgbm_x_test_5%_permute,eli5_lgbm_x_test_10%_permute,eli5_lgbm_x_test_15%_permute
 plas,0,0,0,0
 preg,1,1,1,2
-mass,2,6,3,1
-pres,3,7,4,6
-age,4,3,7,4
-skin,5,4,5,5
-pedi,6,5,6,3
-insu,7,2,2,7
+mass,2,2,2,1
+pres,3,4,5,3
+age,4,6,4,5
+skin,5,7,6,7
+pedi,6,5,7,4
+insu,7,3,3,6

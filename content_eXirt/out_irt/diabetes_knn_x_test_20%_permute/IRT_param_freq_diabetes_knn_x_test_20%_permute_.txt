@@ -4,9 +4,9 @@ Dataset 				 Percentual de itens
 ------------------------------------------------------------
 Porcentagem de itens com valores altos do parametro Dificuldade
 Dataset 				 Percentual de itens
-\OutExecution                                    7%
+\OutExecution                                   40%
 ------------------------------------------------------------
 Porcentagem de itens com valores altos do parametro Advinhacao
 Dataset 				 Percentual de itens
-\OutExecution                                   26%
+\OutExecution                                   21%
 ------------------------------------------------------------

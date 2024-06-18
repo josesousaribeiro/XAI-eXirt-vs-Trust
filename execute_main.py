@@ -81,14 +81,14 @@ for key in models:
                       'colsample_bytree': [0.7, 1]}
     else:
       if key == 'knn':
-        params_grid = {'leaf_size': [5, 10, 20, 40, 50],
+        params_grid = {'leaf_size': [5, 10, 15, 120, 25],
                       'algorithm': ['ball_tree', 'kd_tree', 'brute'],
                       'metric': ['minkowski','cityblock','euclidean'],
-                      'n_neighbors': [2, 4, 6, 8, 10, 12]}
+                      'n_neighbors': [2, 3, 4, 5,6]}
       else:
         if key == 'dt':
           params_grid = {'min_samples_leaf': [1, 10, 20],
-                        'max_depth': [1, 6, 12],
+                        'max_depth': [1, 2, 3, 4, 5 ],
                         'criterion': ['gini','entropy'],
                         'splitter': ['best', 'random'],
                         'min_samples_split': [2, 5, 15, 20, 30]}
@@ -112,9 +112,9 @@ for key in models:
 
 tests = {
     'x_test_original': X_test.copy(),
-    'x_test_10%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.1, 10),
-    'x_test_20%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.2, 20),
-    'x_test_30%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.3, 30)
+    'x_test_5%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.05, 10),
+    'x_test_10%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.10, 20),
+    'x_test_15%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.15, 30)
     }
 
 df_performance_analysis = pd.DataFrame(index=['accuracy','precision','recall','f1','roc_auc'])
