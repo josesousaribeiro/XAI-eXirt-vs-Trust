@@ -127,6 +127,7 @@ model = 'mlp'
 test = 'exirt_oly'
 df_tmp = df[['eXirt_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_5%_permute', 'eXirt_'+model+'_x_test_10%_permute', 'eXirt_'+model+'_x_test_15%_permute']]
 plotBumpChart(df_tmp,model,test,color_dic)
+plt.text(0, 0, 'Corr: '+str(3.23), fontdict=8)
 
 model = 'lgbm'
 test = 'exirt_oly'
