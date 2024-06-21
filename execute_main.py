@@ -69,7 +69,7 @@ for key in models:
                    'solver' : ['sgd', 'adam'],
                    'alpha' : [0.005, 0.01, 0.015],
                    'hidden_layer_sizes': [
-                    (5,),(10,),(15,),(5,5,),(5,10),(5,15,),(10,5),(10,10,),(10,15,),(15,5,),(15,10,),(15,15,)
+                    (4,),(8,),(16,),(4,4,),(4,8),(4,16,),(8,4),(8,8,),(8,16,),(16,4,),(16,8,),(16,16,)
                   ]
     }
   else:
@@ -87,11 +87,10 @@ for key in models:
                       'n_neighbors': [2, 3, 4, 5,6]}
       else:
         if key == 'dt':
-          params_grid = {'min_samples_leaf': [1, 10, 20],
-                        'max_depth': [1, 2, 3, 4, 5 ],
+          params_grid = {'min_samples_leaf': [1,2,3,4],
+                        'max_depth': [1, 2, 3],
                         'criterion': ['gini','entropy'],
-                        'splitter': ['best', 'random'],
-                        'min_samples_split': [2, 5, 15, 20, 30]}
+                        'min_samples_split': [1, 2, 3, 4]}
 
   grid_search = GridSearchCV(estimator = models[key],
                                 param_grid = params_grid,
@@ -104,36 +103,42 @@ for key in models:
   grid_search.fit(X, Y) #execute the cv in all instances of data
   models[key] = grid_search.best_estimator_
   models[key].fit(X_train,y_train) #fit the data with correct train split
-  print(models[key])
+  print(models[key].get_params())
   print()
 #generate perturbed datasets to test
 
 
+df_0 = X_test.copy(deep=True)
+
+df_1 = apply_perturbation_in_sample(X_test.copy(deep=True), 0.01, 10)
+df_2 = apply_perturbation_in_sample(X_test.copy(deep=True), 0.02, 20)
+df_3 = apply_perturbation_in_sample(X_test.copy(deep=True), 0.03, 30)
+df_4 = apply_perturbation_in_sample(X_test.copy(deep=True), 0.04, 40)
+df_5 = apply_perturbation_in_sample(X_test.copy(deep=True), 0.05, 50)
+df_6 = apply_perturbation_in_sample(X_test.copy(deep=True), 0.06, 60)
+df_7 = apply_perturbation_in_sample(X_test.copy(deep=True), 0.07, 70)
+df_8 = apply_perturbation_in_sample(X_test.copy(deep=True), 0.08, 80)
+df_9 = apply_perturbation_in_sample(X_test.copy(deep=True), 0.09, 90)
+df_10 = apply_perturbation_in_sample(X_test.copy(deep=True), 0.10, 100)
+
+
 
 tests = {
-    'x_test_original': X_test.copy(),
-    'x_test_1%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.01, 10),
-    'x_test_2%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.02, 20),
-    'x_test_3%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.03, 30),
-    'x_test_4%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.04, 40),
-    'x_test_5%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.05, 50),
-    'x_test_6%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.06, 60),
-    'x_test_7%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.07, 70),
-    'x_test_8%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.08, 80),
-    'x_test_9%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.09, 90),
-    'x_test_10%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.10, 100),
-    'x_test_11%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.11, 110),
-    'x_test_12%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.12, 120),
-    'x_test_13%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.13, 130),
-    'x_test_14%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.14, 140),
-    'x_test_15%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.15, 150),
-    'x_test_16%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.16, 160),
-    'x_test_17%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.17, 170),
-    'x_test_18%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.18, 180),
-    'x_test_19%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.19, 190),
-    'x_test_20%_permute': apply_perturbation_permute(X_test.copy(deep=True), 0.20, 200),
-
+    'x_test_original': df_0,
+    'x_test_1%_permute': df_1,
+    'x_test_2%_permute': df_2,
+    'x_test_3%_permute': df_3,
+    'x_test_4%_permute': df_4,
+    'x_test_5%_permute': df_5,
+    'x_test_6%_permute': df_6,
+    'x_test_7%_permute': df_7,
+    'x_test_8%_permute': df_8,
+    'x_test_9%_permute': df_9,
+    'x_test_10%_permute': df_10
     }
+
+for i in tests:
+    tests[i].to_csv('.'+bar+'output'+bar+'csv'+bar+i+'.csv',sep=',')
 
 df_performance_analysis = pd.DataFrame(index=['accuracy','precision','recall','f1','roc_auc'])
 for i in models:
@@ -162,8 +167,6 @@ for i in models:
     #print('Explaining M1...')
     #df_feature_rank['exirt_m1'], temp = explainer.explainRankByEXirt(model_m1, X_data_train, X_data_test, y_data_train, y_data_test,code_datasets[i],model_name='m1')
     
-    X_data = X_test.copy(deep=True)
-
     #explanation by skater
 
     #print('ciu explaning...'+i+'_'+j)

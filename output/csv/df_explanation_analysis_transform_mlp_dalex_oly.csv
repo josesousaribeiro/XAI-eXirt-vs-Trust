@@ -1,0 +1,9 @@
+index,dalex_mlp_x_test_original,dalex_mlp_x_test_4%_permute,dalex_mlp_x_test_6%_permute,dalex_mlp_x_test_10%_permute
+plas,0,0,0,0
+mass,1,1,1,1
+pedi,2,2,2,2
+preg,3,3,4,4
+age,4,5,5,5
+pres,5,4,3,3
+insu,6,6,6,6
+skin,7,7,7,7

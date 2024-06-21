@@ -3,18 +3,20 @@ from  analysis import *
 
 df = pd.DataFrame()
 
-df['a'] = range(0,230)
-df['b'] = range(0,230)
-df['c'] = range(0,230)
-df['d'] = range(0,230)
+df['a'] = range(0,20)
+df['b'] = range(0,20)
 
-df['e'] = range(0,230)
-df['f'] = range(0,230)
-df['g'] = range(0,230)
-df['h'] = range(0,230)
+
 
 print(df)
 
-df_new = apply_perturbation_permute(df.copy(), 0.2, 10)
+df['control'] = False
 
-print(df_new)
+df_1 = apply_perturbation_in_sample(df.copy(), 0.1, 42)
+df_2 = apply_perturbation_in_sample(df_1.copy(), 0.1, 42)
+df_3 = apply_perturbation_in_sample(df_2.copy(), 0.1, 42)
+print(df_1)
+print()
+print(df_2)
+print()
+print(df_3)

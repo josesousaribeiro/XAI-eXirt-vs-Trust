@@ -10,20 +10,66 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import accuracy_score
 
-
-def apply_perturbation_permute(df,percent,seed):
-  #trocando posições de cada instância do atributo da vez
+def reset_index_df(df):
   df = df.reset_index()
   try:
     df = df.drop('index',axis=1)
   except:
-     print('')
+    return None 
+  return df
+
+def apply_perturbation_in_sample_controled(df, percent,seed):
+  random.seed(seed)
+  df = reset_index_df(df)
+  
+  number_of_instances = len(df.index)
+  number_of_instances_perturbed = int(number_of_instances*percent)
+  
+  df_to_perturbe = df.iloc[:number_of_instances_perturbed]
+  df_rest = df.iloc[number_of_instances_perturbed:]
+
+  df_perturbed = df_to_perturbe.sample(frac=1)
+  df_perturbed['control'] = True
+
+  df_rest_perturbed = df_rest.loc[df_rest['control']==True]
+
+  df_rest_no_perturbed = df_rest.loc[df_rest['control']==False]
+
+
+  df_final = pd.concat([df_rest_no_perturbed,df_perturbed,df_rest_perturbed])
+
+  df_final = reset_index_df(df_final)
+
+  return df_final
+
+def apply_perturbation_in_sample(df, percent,seed):
+  random.seed(seed)
+  df = reset_index_df(df)
+  
+  number_of_instances = len(df.index)
+  number_of_instances_perturbed = int(number_of_instances*percent)
+  
+  df_to_perturbe = df.iloc[:number_of_instances_perturbed]
+  df_rest = df.iloc[number_of_instances_perturbed:]
+
+  df_perturbed = df_to_perturbe.sample(frac=1)
+
+
+  df_final = pd.concat([df_rest,df_perturbed])
+
+  df_final = reset_index_df(df_final)
+
+  return df_final
+
+
+def apply_perturbation_permute(df,percent,seed):
+  #trocando posições de cada instância do atributo da vez
+  df = reset_index_df(df)
   number_of_instances = len(df.index)
   number_of_instances_perturbed = int(number_of_instances*percent)
   df_tmp = df.copy(deep=True)
   for i,c in enumerate(df.columns):
     random.seed(seed+i)
-    #random_id = random.sample(range(0,number_of_instances_perturbed), number_of_instances_perturbed)
     random_id = random.sample(list(df.index), k=number_of_instances_perturbed)
 
     for j,r in enumerate(random_id):

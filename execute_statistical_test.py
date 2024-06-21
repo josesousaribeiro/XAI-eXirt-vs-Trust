@@ -17,21 +17,26 @@ print(df)
 
 df = df[[
          'mlp_x_test_original',
+         'mlp_x_test_4%_permute',
+         'mlp_x_test_6%_permute',
+         'mlp_x_test_10%_permute',         
+
+
          'lgbm_x_test_original',
-         'knn_x_test_original',
+         'lgbm_x_test_4%_permute',
+         'lgbm_x_test_6%_permute',
+         'lgbm_x_test_10%_permute',      
+
          'dt_x_test_original',
-         'mlp_x_test_5%_permute',
-         'lgbm_x_test_5%_permute',
-         'knn_x_test_5%_permute',
-         'dt_x_test_5%_permute',
-         'mlp_x_test_10%_permute',
-         'lgbm_x_test_10%_permute',
-         'knn_x_test_10%_permute',
+         'dt_x_test_4%_permute',
+         'dt_x_test_6%_permute',
          'dt_x_test_10%_permute',
-         'mlp_x_test_15%_permute',         
-         'lgbm_x_test_15%_permute',      
-         'knn_x_test_15%_permute',        
-         'dt_x_test_15%_permute'
+
+         'knn_x_test_original',         
+         'knn_x_test_4%_permute',
+         'knn_x_test_6%_permute',
+         'knn_x_test_10%_permute'        
+         
          ]]
 columns = df.columns
 df_values = df.values.transpose()
