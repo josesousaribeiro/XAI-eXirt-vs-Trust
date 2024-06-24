@@ -275,7 +275,7 @@ plotBumpChart(df_tmp,model,test,color_dic)
 
 
 model = 'lgbm'
-test = 'shap_eXirt_dalex_lofo'
-df_tmp = df[['shap_'+model+'_x_test_original', 'dalex_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_original', 'eli5_'+model+'_x_test_original','lofo_'+model+'_x_test_original']]
+test = 'shap_skater_dalex_eXirt_eli5_lofo'
+df_tmp = df[['shap_'+model+'_x_test_original', 'skater_'+model+'_x_test_original', 'dalex_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_original', 'eli5_'+model+'_x_test_original','lofo_'+model+'_x_test_original']]
 plotBumpChart(df_tmp,model,test,color_dic,fig_size=(4.5,3))
 
