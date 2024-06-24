@@ -1,0 +1,9 @@
+index,shap_lgbm_x_test_original,skater_lgbm_x_test_original,dalex_lgbm_x_test_original,eXirt_lgbm_x_test_original,eli5_lgbm_x_test_original,lofo_lgbm_x_test_original
+plas,0,0,0,0,0,1
+mass,1,1,1,1,2,6
+age,2,2,2,3,4,0
+preg,3,3,5,4,1,4
+pedi,4,4,3,2,6,2
+insu,5,5,4,5,7,7
+pres,6,6,6,6,3,3
+skin,7,7,7,7,5,5

@@ -38,6 +38,10 @@ df = df[[
          'knn_x_test_10%_permute'        
          
          ]]
+
+for col in df.columns:
+    df = df.rename(columns={col:col.replace('_x_test_',': ').replace('_permute','')})
+
 columns = df.columns
 df_values = df.values.transpose()
  
@@ -56,6 +60,6 @@ df_matrix.index = columns
 print(df_matrix)
 plt.margins(8)
 plt.figure(figsize=(9,6))
-ax = sns.heatmap(df_matrix, vmin=0, vmax=1, xticklabels=columns,yticklabels=columns,cmap="Greens",linewidths=.5,annot=True,fmt='.2f', annot_kws={"fontsize":6})
+ax = sns.heatmap(df_matrix, vmin=0, vmax=1, xticklabels=columns,yticklabels=columns,cmap="Greens",linewidths=.5,annot=True,fmt='.2f', annot_kws={"fontsize":9})
 plt.tight_layout()
 plt.savefig('.'+bar+'output'+bar+'fig'+bar+'statistical_test.png')

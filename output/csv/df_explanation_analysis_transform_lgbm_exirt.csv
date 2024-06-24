@@ -1,0 +1,9 @@
+index,eXirt_lgbm_x_test_original,eXirt_lgbm_x_test_4%_permute,eXirt_lgbm_x_test_6%_permute,eXirt_lgbm_x_test_10%_permute
+plas,0,0,0,0
+mass,1,1,1,1
+pedi,2,2,2,2
+age,3,3,3,3
+preg,4,4,4,4
+insu,5,5,5,5
+pres,6,6,6,6
+skin,7,7,7,7

@@ -1,0 +1,9 @@
+index,dalex_knn_x_test_original,dalex_knn_x_test_4%_permute,dalex_knn_x_test_6%_permute,dalex_knn_x_test_10%_permute
+plas,0,0,0,0
+mass,1,1,1,1
+age,2,2,2,2
+pedi,3,5,5,3
+preg,4,3,3,5
+insu,5,4,4,4
+pres,6,6,6,6
+skin,7,7,7,7
