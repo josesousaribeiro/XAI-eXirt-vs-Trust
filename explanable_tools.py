@@ -62,11 +62,12 @@ def explainRankByKernelShap(model,x_features_names, X): # shap.sample(data, K) o
     explainer = shap.KernelExplainer(model.predict_proba, X[:],nsamples=len(x_features_names))
     shap_values = explainer.shap_values(X[:])
     vals= np.abs(shap_values).mean(0)
-    temp_df = pd.DataFrame(list(zip(x_features_names, sum(vals))), columns=['feat_name','shap_value'])
+    
+
+    temp_df = pd.DataFrame(list(zip(x_features_names, sum(vals.T))), columns=['feat_name','shap_value'])
 
     temp_df = temp_df.sort_values(by=['shap_value','feat_name'], ascending=False) #fix problem of equals values of explaination
     return temp_df['feat_name'].to_list()
-
 
 def explainRankByTreeShap(model, x_features_names, X, is_gradient=False):
     np.random.seed(0)

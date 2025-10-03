@@ -118,6 +118,8 @@ def z_score(df):
   return df_std
 
 def y_as_binary(y):
-   return  y.map({"tested_positive":1, "tested_negative":0})
+   class_0 = str(list(dict.fromkeys(y))[0])
+   class_1 = str(list(dict.fromkeys(y))[1])
+   return  y.map({class_1: 1, class_0: 0})
 
 
