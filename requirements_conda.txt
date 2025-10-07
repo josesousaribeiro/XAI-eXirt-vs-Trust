@@ -9,3 +9,13 @@ conda-forge::ds-lime
 conda-forge::lofo-importance
 conda-forge::skater==1.0.2
 conda-forge::dalex
+conda-forge::r-base>=4.3,<4.5
+conda-forge::rpy2==3.4.5
+conda-forge::r-survival
+conda-forge::r-mvtnorm
+conda-forge::r-expm
+conda-forge::r-polycor
+conda-forge::r-sfsmisc
+conda-forge::r-mass
+conda-forge::pcre2
+bioconda::r-msm

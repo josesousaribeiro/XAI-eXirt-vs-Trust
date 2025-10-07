@@ -24,7 +24,6 @@ from catsim.irt import icc_hpc, inf_hpc
 #global limit_dis
 #global limit_adv
 
-global bar
 
 def saveFile(lis,cols,path,name):
     """
@@ -136,7 +135,7 @@ def plothist(dict_tmp,parameter,dataset, out,bins = None,save = False):
     plt.ylabel('Frequencia')
     
     if save:
-        plt.savefig(os.getcwd()+out+bar+dataset+bar+parameter+'_hist.png',dpi=200)
+        plt.savefig(os.getcwd()+out+os.sep+dataset+os.sep+parameter+'_hist.png',dpi=200)
         plt.close()
     else:
         plt.show()
@@ -230,7 +229,7 @@ def printFreq(tmp_dict, save = False):
     lista = [dis, dif, ges]
     name = ['Discriminacao','Dificuldade','Advinhacao']
     if save:
-        file = open(r''+os.getcwd()+bar+'IRT_param_freq.txt','w')
+        file = open(r''+os.getcwd()+os.sep+'IRT_param_freq.txt','w')
         for i in range(len(name)):
             file.write('Porcentagem de itens com valores altos do parametro '+name[i]+'\n')
             file.write('Dataset \t\t\t\t Percentual de itens\n')
@@ -351,7 +350,7 @@ def thetaClfEstimate(dict_tmp,irt_dict,irt_resp_dict,dataset,parameter,list_thet
    
     if save:
         df = pd.DataFrame(list(tmp.items()),index=tmp.keys(), columns=['Clf','Theta'])
-        df.to_csv(os.getcwd()+out+bar+dataset+bar+'theta_list.csv',index=0)
+        df.to_csv(os.getcwd()+out+os.sep+dataset+os.sep+'theta_list.csv',index=0)
     
     return tmp
         #dict_theta[dataset] = tmp
@@ -526,9 +525,9 @@ def calcPro(icc_dict,dict_tmp,dataset, accur,out,irt_resp_dict,missing=False,sav
     
     if save:
         cols = ['Clf','Score']
-        saveFile(l_score_total,cols,os.getcwd()+out+bar+dataset+bar,'score_total.csv')
-        saveFile(l_score_pos,cols,os.getcwd()+out+bar+dataset+bar,'score_disPositivo.csv')
-        plt.savefig(os.getcwd()+out+bar+dataset+bar+dataset+'_score.png',dpi=200, bbox_inches='tight')
+        saveFile(l_score_total,cols,os.getcwd()+out+os.sep+dataset+os.sep,'score_total.csv')
+        saveFile(l_score_pos,cols,os.getcwd()+out+os.sep+dataset+os.sep,'score_disPositivo.csv')
+        plt.savefig(os.getcwd()+out+os.sep+dataset+os.sep+dataset+'_score.png',dpi=200, bbox_inches='tight')
         plt.close()
     else:
         print('\nScores dos classificadores para o dataset:',dataset,'\n')
@@ -536,7 +535,7 @@ def calcPro(icc_dict,dict_tmp,dataset, accur,out,irt_resp_dict,missing=False,sav
         for i in range(len(clfs)):
             print('{:40} {:10}'.format(l_score_total[i][0],l_score_total[i][1]))
         #print('-'*60)
-        #plt.savefig(os.getcwd()+out+bar+dataset+bar+parameter+'_CCC.png',dpi=200, bbox_inches='tight')
+        #plt.savefig(os.getcwd()+out+os.sep+dataset+os.sep+parameter+'_CCC.png',dpi=200, bbox_inches='tight')
         #plt.close()
         print('\nScore com discriminacao positiva:\n')
         for i in range(len(clfs)):
@@ -614,7 +613,7 @@ def plotCCC(icc_dict,dict_tmp,dataset,parameter, out,save = False):
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     
     if save:
-        #plt.savefig(os.getcwd()+out+bar+dataset+bar+parameter+'_CCC.png',dpi=200, bbox_inches='tight')
+        #plt.savefig(os.getcwd()+out+os.sep+dataset+os.sep+parameter+'_CCC.png',dpi=200, bbox_inches='tight')
         plt.savefig(os.getcwd()+out+dataset+parameter+'_CCC.png',dpi=200, bbox_inches='tight')
         plt.close()
     else:
@@ -652,14 +651,9 @@ def getThetaResp(respMatrix):
     return res_vector, theta
     
 def main(arg_dir = 'output',respMatrix=None,IRTparam=None,accur=None,nameData=None,limit_dif = 1,limit_dis = 0.75,limit_adv = 0.2,plotDataHist = None,plotAllHist = False,bins = None,precision=None,metodo=None,plotDataCCC = None,plotAllCCC = False,scoreData = None,scoreAll = False,missing = False,save = False):  
-    global bar
-    bar = '?'
-    if platform.system() == 'Windows':
-       bar = '\\'
-    elif platform.system() == 'Linux':
-       bar =  '/'
+    
 
-    out  = bar+arg_dir    
+    out  = os.sep+arg_dir    
     
     #Proficiencia inicial de cada metodo
     list_theta = {}      
@@ -672,18 +666,18 @@ def main(arg_dir = 'output',respMatrix=None,IRTparam=None,accur=None,nameData=No
         list_dir = os.listdir(os.getcwd()+out)
         for path in list_dir:
             
-            theta = pd.read_csv(os.getcwd()+out+bar+path+bar+path+'_final.csv',index_col=0)
+            theta = pd.read_csv(os.getcwd()+out+os.sep+path+os.sep+path+'_final.csv',index_col=0)
             list_theta[path] = theta
-            irt_parameters = pd.read_csv(os.getcwd()+out+bar+path+bar+'irt_item_param.csv',index_col=0).to_numpy()
-            res_vector = pd.read_csv(os.getcwd()+out+bar+path+bar+path+'.csv').to_numpy()
+            irt_parameters = pd.read_csv(os.getcwd()+out+os.sep+path+os.sep+'irt_item_param.csv',index_col=0).to_numpy()
+            res_vector = pd.read_csv(os.getcwd()+out+os.sep+path+os.sep+path+'.csv').to_numpy()
             col = np.ones((len(irt_parameters), 1))    
             new_irt = np.append(irt_parameters, col, axis = 1)
             irt_dict[path] = new_irt
             irt_resp_dict[path] = res_vector
     else:
         path = nameData
-        if not os.path.exists(os.getcwd()+out+bar+path):
-            os.makedirs(os.getcwd()+out+bar+path)
+        if not os.path.exists(os.getcwd()+out+os.sep+path):
+            os.makedirs(os.getcwd()+out+os.sep+path)
         irt_parameters = pd.read_csv(IRTparam,index_col=0).to_numpy()
         col = np.ones((len(irt_parameters), 1))    
         new_irt = np.append(irt_parameters, col, axis = 1)
@@ -789,5 +783,5 @@ if __name__ == '__main__':
                         default = False, help = 'Salva os graficos mostrados na tela')
     
     arguments = parser.parse_args()
-    #out  = bar+arguments.dir
+    #out  = os.sep+arguments.dir
     main(arguments.dir,arguments.respMatrix,arguments.IRTparam,arguments.accur,arguments.nameData,arguments.limit_dif,arguments.limit_dis,arguments.limit_adv,arguments.plotDataHist,arguments.plotAllHist,arguments.bins,arguments.precision,arguments.metodo,arguments.plotDataCCC,arguments.plotAllCCC,arguments.scoreData,arguments.scoreAll,arguments.missing,arguments.save)

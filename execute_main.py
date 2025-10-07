@@ -22,7 +22,7 @@ from sklearn.model_selection import StratifiedKFold
 #analysis data
 
 from analysis import *
-from explanable_tools import explainRankByEli5, explainRankByEXirt, explainRankByKernelShap, explainRankByKernelShap_fixed, explainRankByLofo, explainRankDalex, explainRankSkater, explainRankNewCiu
+from explanable_tools import explainRankByEli5, explainRankByEXirt, explainRankByKernelShap, explainRankByLofo, explainRankDalex, explainRankSkater, explainRankNewCiu
 import pandas as pd
 
 #util
@@ -167,18 +167,18 @@ df_explanation_analysis = pd.DataFrame()
 for i in models:
   for j in tests: 
   
-    print('Shap explaning...'+i+'_'+j)
-    df_explanation_analysis['shap_'+i+'_'+j] = explainRankByKernelShap(models[i], tests[j].columns, tests[j].copy(deep=True))
+    #print('Shap explaning...'+i+'_'+j)
+    #df_explanation_analysis['shap_'+i+'_'+j] = explainRankByKernelShap(models[i], tests[j].columns, tests[j].copy(deep=True))
 
     print(df_explanation_analysis)
 
-    #print('EXirt explaing...'+i+'_'+j)
-    #df_explanation_analysis['eXirt_'+i+'_'+j] = explainRankByEXirt(models[i],X_train,tests[j].copy(deep=True),y_train, y_test, 'diabetes_'+i+'_'+j)
+    print('EXirt explaing...'+i+'_'+j)
+    df_explanation_analysis['eXirt_'+i+'_'+j] = explainRankByEXirt(models[i],X_train,tests[j].copy(deep=True),y_train, y_test, 'diabetes_'+i+'_'+j)
 
     print('Skater explaning...'+i+'_'+j)
     df_explanation_analysis['skater_'+i+'_'+j] = explainRankSkater(models[i], tests[j].copy(deep=True))
     
-    print('Eli5 explaning...'+i+'_'+j)
+    #print('Eli5 explaning...'+i+'_'+j)
     df_explanation_analysis['eli5_'+i+'_'+j] = explainRankByEli5(models[i], tests[j].copy(deep=True), y_test)
     
     print('Dalex explaning...'+i+'_'+j)
