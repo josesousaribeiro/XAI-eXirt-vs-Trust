@@ -22,7 +22,7 @@ from sklearn.model_selection import StratifiedKFold
 #analysis data
 
 from analysis import *
-from explanable_tools import explainRankByEli5, explainRankByEXirt, explainRankByKernelShap, explainRankByLofo, explainRankDalex, explainRankSkater, explainRankNewCiu
+from explanable_tools import explainRankByEli5, explainRankByEXirt, explainRankByKernelShap_fixed, explainRankByLofo, explainRankDalex, explainRankSkater, explainRankNewCiu
 import pandas as pd
 
 #util
@@ -167,10 +167,10 @@ df_explanation_analysis = pd.DataFrame()
 for i in models:
   for j in tests: 
   
-    #print('Shap explaning...'+i+'_'+j)
-    #df_explanation_analysis['shap_'+i+'_'+j] = explainRankByKernelShap(models[i], tests[j].columns, tests[j].copy(deep=True))
+    print('Shap explaning...'+i+'_'+j)
+    df_explanation_analysis['shap_'+i+'_'+j] = explainRankByKernelShap_fixed(models[i], tests[j].columns, tests[j].copy(deep=True))
 
-    print(df_explanation_analysis)
+    print(df_explanation_analysis.head(8))
 
     print('EXirt explaing...'+i+'_'+j)
     df_explanation_analysis['eXirt_'+i+'_'+j] = explainRankByEXirt(models[i],X_train,tests[j].copy(deep=True),y_train, y_test, 'diabetes_'+i+'_'+j)

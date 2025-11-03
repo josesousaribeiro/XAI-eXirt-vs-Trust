@@ -62,12 +62,128 @@ def explainRankByKernelShap(model,x_features_names, X): # shap.sample(data, K) o
     explainer = shap.KernelExplainer(model.predict_proba, X[:],nsamples=len(x_features_names))
     shap_values = explainer.shap_values(X[:])
     vals= np.abs(shap_values).mean(0)
-    
-
     temp_df = pd.DataFrame(list(zip(x_features_names, sum(vals.T))), columns=['feat_name','shap_value'])
-
     temp_df = temp_df.sort_values(by=['shap_value','feat_name'], ascending=False) #fix problem of equals values of explaination
     return temp_df['feat_name'].to_list()
+
+def explainRankByKernelShap_fixed(
+    model,
+    x_features_names,
+    X,
+    *,
+    background_method: str = "sample",  # "sample" | "kmeans"
+    background_size: int = 100,
+    nsamples: int = 100,  # nº de coalizões aproximadas (↑ = mais preciso, mais lento)
+    random_state: int = 0,
+):
+    """
+    Retorna:
+      - importance_df: ranking global por |SHAP| médio
+      - shap_df: DataFrame (n_amostras x n_features) com os SHAP values
+    """
+    rng = np.random.default_rng(random_state)
+    debug = True
+    # --- Preparar X e nomes ---
+    X_is_df = hasattr(X, "values") and hasattr(X, "index")
+    X_np = X.values if X_is_df else np.asarray(X)
+    if X_np.ndim != 2:
+        raise ValueError(f"X deve ser 2D (amostras x features). Recebido shape={X_np.shape}.")
+
+    n_rows, n_cols = X_np.shape
+    index = X.index if X_is_df else pd.RangeIndex(n_rows)
+
+    # Resolver nomes de features
+    if x_features_names is not None:
+        feat_names = list(x_features_names)
+        if len(feat_names) != n_cols:
+            raise ValueError(
+                f"Quantidade de nomes ({len(feat_names)}) ≠ nº de colunas de X ({n_cols}). "
+                "Garanta correspondência 1:1."
+            )
+    elif X_is_df:
+        feat_names = list(X.columns)
+        if len(feat_names) != n_cols:
+            raise ValueError(
+                f"X.columns tem {len(feat_names)} nomes, mas X possui {n_cols} colunas."
+            )
+    else:
+        feat_names = [f"x{i}" for i in range(n_cols)]
+
+    if debug:
+        print(f"[DEBUG] X shape: {X_np.shape} | n_features esperadas: {len(feat_names)}")
+
+    # --- Detectar tarefa e função f(x) ---
+    is_classifier = getattr(model, "_estimator_type", None) == "classifier" or hasattr(model, "predict_proba")
+    if is_classifier and hasattr(model, "predict_proba"):
+        proba_shape = model.predict_proba(X_np[:1]).shape
+        if len(proba_shape) == 2 and proba_shape[1] == 2:
+            f = lambda Z: model.predict_proba(Z)[:, 1]
+            multi = False
+            if debug:
+                print("[DEBUG] Tarefa: classificação binária (usando prob da classe positiva).")
+        else:
+            f = model.predict_proba
+            multi = True
+            if debug:
+                print(f"[DEBUG] Tarefa: multiclasse (shape proba={proba_shape}).")
+    else:
+        f = model.predict
+        multi = False
+        if debug:
+            print("[DEBUG] Tarefa: regressão ou classificador sem predict_proba (usando predict).")
+
+    # --- Background para KernelSHAP ---
+    if background_method == "kmeans":
+        K = min(background_size, max(1, n_rows))
+        background = shap.kmeans(X_np, K)
+        if debug:
+            print(f"[DEBUG] Background: kmeans com K={K}")
+    else:
+        if n_rows > background_size:
+            idx = rng.choice(n_rows, size=background_size, replace=False)
+            background = X_np[idx]
+        else:
+            background = X_np
+        if debug:
+            print(f"[DEBUG] Background: sample com shape {getattr(background,'shape',None)}")
+
+    # --- Explainer & SHAP ---
+    explainer = shap.KernelExplainer(f, background)
+    shap_values = explainer.shap_values(X_np, nsamples=nsamples)
+
+    # --- Construir shap_df e importância global ---
+    if multi:
+        # lista de arrays [n, m] por classe
+        per_class = [np.abs(sv).mean(axis=0) for sv in shap_values]          # k x m
+        mean_abs = np.mean(np.vstack(per_class), axis=0)                     # m
+
+        # média entre classes por amostra -> (n, m)
+        sv_stack = np.stack(shap_values, axis=-1)                            # (n, m, k)
+        sv_avg = sv_stack.mean(axis=2)                                       # (n, m)
+        shap_df = pd.DataFrame(sv_avg, index=index, columns=feat_names)
+    else:
+        sv = shap_values if isinstance(shap_values, np.ndarray) else shap_values[0]
+        if sv.ndim != 2 or sv.shape[1] != n_cols:
+            raise ValueError(
+                f"Formato inesperado de SHAP values: {sv.shape}. "
+                f"Esperado (n_amostras, n_features)=({n_rows}, {n_cols})."
+            )
+        mean_abs = np.abs(sv).mean(axis=0)                                   # m
+        shap_df = pd.DataFrame(sv, index=index, columns=feat_names)
+
+    total = mean_abs.sum() or 1.0
+    importance_df = (
+        pd.DataFrame({"feature": feat_names, "mean_abs_shap": mean_abs})
+        .assign(pct_contrib=lambda d: 100 * d["mean_abs_shap"] / total)
+        .sort_values("mean_abs_shap", ascending=False)
+        .reset_index(drop=True)
+    )
+    importance_df["rank"] = np.arange(1, len(importance_df) + 1)
+
+    if debug:
+        print(f"[DEBUG] shap_df shape: {shap_df.shape} | importance_df linhas: {len(importance_df)}")
+
+    return importance_df, shap_df
 
 def explainRankByTreeShap(model, x_features_names, X, is_gradient=False):
     np.random.seed(0)

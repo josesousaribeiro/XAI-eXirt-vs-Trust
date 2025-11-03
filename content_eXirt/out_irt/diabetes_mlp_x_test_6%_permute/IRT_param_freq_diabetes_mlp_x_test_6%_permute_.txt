@@ -1,12 +1,12 @@
 Porcentagem de itens com valores altos do parametro Discriminacao
 Dataset 				 Percentual de itens
-/OutExecution                                    8%
+/OutExecution                                   71%
 ------------------------------------------------------------
 Porcentagem de itens com valores altos do parametro Dificuldade
 Dataset 				 Percentual de itens
-/OutExecution                                   77%
+/OutExecution                                    5%
 ------------------------------------------------------------
 Porcentagem de itens com valores altos do parametro Advinhacao
 Dataset 				 Percentual de itens
-/OutExecution                                   25%
+/OutExecution                                   39%
 ------------------------------------------------------------
