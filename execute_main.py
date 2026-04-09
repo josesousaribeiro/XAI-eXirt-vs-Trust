@@ -49,8 +49,8 @@ models = {
 
 
 
-dataset_name = 'phoneme'
-dataset = openml.datasets.get_dataset(dataset_name) #diabetes, banknote-authentication, climate-model-simulation-crashes, phoneme
+dataset_name = 'phoneme' #diabetes, banknote-authentication, climate-model-simulation-crashes, phoneme
+dataset = openml.datasets.get_dataset(dataset_name) 
 
 X, Y, categorical_indicator, attribute_names = dataset.get_data(
                   dataset_format="dataframe", target=dataset.default_target_attribute)

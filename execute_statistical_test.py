@@ -10,7 +10,12 @@ import util
 
 bar = util.bar_system()
 
-df = pd.read_csv('.'+bar+'output'+bar+'csv'+bar+'df_performance_analysis.csv',sep=',',index_col=0)
+#output_dataset_path = '_'+'diabetes'
+#output_dataset_path = '_'+'phoneme'
+#output_dataset_path = '_'+'banknote_authentication'
+output_dataset_path = '_'+'climate-model-simulation-crashes'
+
+df = pd.read_csv('.'+bar+'output'+output_dataset_path+bar+'csv'+bar+'df_performance_analysis.csv',sep=',',index_col=0)
 
 print('Dataframe a ser analisado:')
 print(df)
@@ -62,4 +67,4 @@ plt.margins(8)
 plt.figure(figsize=(9,6))
 ax = sns.heatmap(df_matrix, vmin=0, vmax=1, xticklabels=columns,yticklabels=columns,cmap="Greens",linewidths=.5,annot=True,fmt='.2f', annot_kws={"fontsize":9})
 plt.tight_layout()
-plt.savefig('.'+bar+'output'+bar+'fig'+bar+'statistical_test.png')
+plt.savefig('.'+bar+'output'+output_dataset_path+bar+'fig'+bar+'statistical_test.png')

@@ -1,0 +1,6 @@
+index,dalex_knn_x_test_original,dalex_knn_x_test_4%_permute,dalex_knn_x_test_6%_permute,dalex_knn_x_test_10%_permute
+V1,0,1,0,3
+V3,1,0,2,4
+V2,2,3,1,0
+V4,3,2,4,2
+V5,4,4,3,1
