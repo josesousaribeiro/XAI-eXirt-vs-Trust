@@ -1,0 +1,6 @@
+index,shap_lgbm_x_test_original,shap_lgbm_x_test_4%_permute,shap_lgbm_x_test_6%_permute,shap_lgbm_x_test_10%_permute
+start,0,0,0,0
+id,1,1,1,1
+size,2,2,2,2
+end,3,3,3,3
+event,4,4,4,4

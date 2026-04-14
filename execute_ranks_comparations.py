@@ -152,14 +152,8 @@ def plotBumpChart(df_features_rank_copy,model,test,color_dic=None,fig_size=(3,2.
 #output_dataset_path = '_'+'banknote_authentication'
 #color_dic = {'V1':'#ff7f0e', 'V2':'#ec96aa', 'V3':'#aec7e8', 'V4':'#ffbb78'}
 
-output_dataset_path = '_'+'climate-model-simulation-crashes'
-color_dic = {
-    'V1': '#ff7f0e', 'V2': '#ec96aa', 'V3': '#aec7e8', 'V4': '#ffbb78',
-    'V5': '#2ca02c', 'V6': '#98df8a', 'V7': '#d62728', 'V8': '#ff9896',
-    'V9': '#9467bd', 'V10': '#c5b0d5', 'V11': '#8c564b', 'V12': '#c49c94',
-    'V13': '#e377c2', 'V14': '#f7b6d2', 'V15': '#7f7f7f', 'V16': '#c7c7c7',
-    'V17': '#bcbd22', 'V18': '#dbdb8d', 'V19': '#17becf', 'V20': '#9edae5'
-}
+output_dataset_path = '_'+'mozilla4'
+color_dic = {'start': '#ff7f0e', 'end': '#ec96aa', 'event': '#aec7e8', 'size': '#ffbb78','id':'#9467bd'}
 
 df = pd.read_csv('.'+bar+'output'+output_dataset_path+bar+'csv'+bar+'df_explanation_analysis.csv',sep=',',index_col=0)
 

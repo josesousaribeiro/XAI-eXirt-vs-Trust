@@ -1,0 +1,6 @@
+index,eli5_knn_x_test_original,eli5_knn_x_test_4%_permute,eli5_knn_x_test_6%_permute,eli5_knn_x_test_10%_permute
+start,0,1,0,1
+end,1,0,1,0
+size,2,3,3,3
+id,3,2,2,2
+event,4,4,4,4

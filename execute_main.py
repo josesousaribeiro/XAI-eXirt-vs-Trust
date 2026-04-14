@@ -55,7 +55,9 @@ dataset = openml.datasets.get_dataset(dataset_name)
 X, Y, categorical_indicator, attribute_names = dataset.get_data(
                   dataset_format="dataframe", target=dataset.default_target_attribute)
 
+X = X.drop('id', axis=1)
 
+attribute_names = attribute_names.remove('id')
 
 X = z_score(X)
 Y = y_as_binary(Y)
