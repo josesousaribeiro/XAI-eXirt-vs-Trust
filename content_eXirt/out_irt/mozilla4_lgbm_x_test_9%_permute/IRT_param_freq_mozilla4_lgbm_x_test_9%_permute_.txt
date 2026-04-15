@@ -8,5 +8,5 @@ Dataset 				 Percentual de itens
 ------------------------------------------------------------
 Porcentagem de itens com valores altos do parametro Advinhacao
 Dataset 				 Percentual de itens
-/OutExecution                                   21%
+/OutExecution                                   25%
 ------------------------------------------------------------
