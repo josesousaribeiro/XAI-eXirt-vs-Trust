@@ -13,7 +13,7 @@ bar = util.bar_system()
 #output_dataset_path = '_'+'diabetes'
 #output_dataset_path = '_'+'phoneme'
 #output_dataset_path = '_'+'banknote_authentication'
-output_dataset_path = '_'+'climate-model-simulation-crashes'
+output_dataset_path = '_'+'mozilla4'
 
 df = pd.read_csv('.'+bar+'output'+output_dataset_path+bar+'csv'+bar+'df_performance_analysis.csv',sep=',',index_col=0)
 

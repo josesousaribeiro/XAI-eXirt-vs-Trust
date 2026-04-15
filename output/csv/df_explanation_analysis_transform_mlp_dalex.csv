@@ -1,6 +1,0 @@
-index,dalex_mlp_x_test_original,dalex_mlp_x_test_4%_permute,dalex_mlp_x_test_6%_permute,dalex_mlp_x_test_10%_permute
-start,0,0,4,4
-end,1,1,0,2
-size,2,2,1,3
-event,3,4,2,0
-id,4,3,3,1
