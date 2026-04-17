@@ -1,0 +1,9 @@
+index,eXirt_knn_x_test_original,eXirt_knn_x_test_4%_permute,eXirt_knn_x_test_6%_permute,eXirt_knn_x_test_10%_permute
+plas,0,0,0,0
+age,1,1,1,2
+mass,2,2,2,3
+pedi,3,3,3,4
+insu,4,4,4,6
+preg,5,5,5,1
+skin,6,6,6,5
+pres,7,7,7,7

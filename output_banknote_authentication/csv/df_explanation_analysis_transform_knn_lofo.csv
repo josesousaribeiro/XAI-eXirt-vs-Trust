@@ -1,0 +1,5 @@
+index,lofo_knn_x_test_original,lofo_knn_x_test_4%_permute,lofo_knn_x_test_6%_permute,lofo_knn_x_test_10%_permute
+V1,0,0,3,1
+V2,1,1,2,3
+V3,2,2,1,2
+V4,3,3,0,0

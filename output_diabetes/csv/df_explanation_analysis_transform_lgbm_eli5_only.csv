@@ -1,0 +1,9 @@
+index,eli5_lgbm_x_test_original,eli5_lgbm_x_test_4%_permute,eli5_lgbm_x_test_6%_permute,eli5_lgbm_x_test_10%_permute
+plas,0,0,0,0
+preg,1,1,1,1
+mass,2,2,2,2
+pres,3,4,3,5
+age,4,3,5,4
+skin,5,5,4,3
+pedi,6,7,6,6
+insu,7,6,7,7

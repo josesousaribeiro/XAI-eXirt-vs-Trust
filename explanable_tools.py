@@ -62,11 +62,63 @@ def explainRankByKernelShap(model,x_features_names, X): # shap.sample(data, K) o
     explainer = shap.KernelExplainer(model.predict_proba, X[:],nsamples=len(x_features_names))
     shap_values = explainer.shap_values(X[:])
     vals= np.abs(shap_values).mean(0)
-    temp_df = pd.DataFrame(list(zip(x_features_names, sum(vals))), columns=['feat_name','shap_value'])
-
+    temp_df = pd.DataFrame(list(zip(x_features_names, sum(vals.T))), columns=['feat_name','shap_value'])
     temp_df = temp_df.sort_values(by=['shap_value','feat_name'], ascending=False) #fix problem of equals values of explaination
     return temp_df['feat_name'].to_list()
 
+def explainRankByKernelShap_fixed(model, x_features_names, X):  # shap.sample(data, K) or shap.kmeans(data, K)
+    np.random.seed(0)
+
+    # --- Normaliza X e checa nomes ---
+    X_np = X.values if isinstance(X, pd.DataFrame) else np.asarray(X)
+    if X_np.ndim != 2:
+        raise ValueError(f"X deve ser 2D (amostras x features). Recebido shape={X_np.shape}.")
+    n_rows, n_cols = X_np.shape
+
+    if x_features_names is None:
+        raise ValueError("x_features_names não pode ser None; informe os nomes das features.")
+    if len(x_features_names) != n_cols:
+        raise ValueError(f"len(x_features_names)={len(x_features_names)} difere do nº de colunas de X={n_cols}.")
+
+    # --- Define f(x) corretamente (binário, multiclasse, regressão) ---
+    if hasattr(model, "predict_proba"):
+        proba_shape = model.predict_proba(X_np[:1]).shape
+        if len(proba_shape) == 2 and proba_shape[1] == 2:
+            # Classificação binária: usar prob da classe positiva
+            f = lambda Z: model.predict_proba(Z)[:, 1]
+            multi = False
+        else:
+            # Multiclasse: usar matriz de probabilidades
+            f = model.predict_proba
+            multi = True
+    else:
+        # Regressão ou classificador sem predict_proba
+        f = model.predict
+        multi = False
+
+    # --- Background compacto para KernelSHAP (evita custo enorme) ---
+    bsize = min(100, n_rows)
+    background = X_np[:bsize, :]
+
+    # nsamples é passado no shap_values, NÃO no __init__
+    explainer = shap.KernelExplainer(f, background)
+    shap_values = explainer.shap_values(X_np, nsamples=len(x_features_names))
+
+    # --- Agregação correta dos SHAP values ---
+    if multi:
+        # Lista de arrays [n, m] por classe -> média do |SHAP| por classe -> média entre classes
+        per_class_mean_abs = [np.abs(sv).mean(axis=0) for sv in shap_values]   # k x m
+        vals = np.mean(np.vstack(per_class_mean_abs), axis=0)                  # (m,)
+    else:
+        # Regressão ou binário: shap_values é array (n, m) ou lista com 1 item
+        sv = shap_values if isinstance(shap_values, np.ndarray) else shap_values[0]
+        vals = np.abs(sv).mean(axis=0)                                         # (m,)
+
+    # --- Ranking (corrige sum(vals.T) e mantém seu retorno como lista) ---
+    temp_df = pd.DataFrame({"feat_name": list(x_features_names), "shap_value": vals})
+    temp_df = temp_df.sort_values(by=["shap_value", "feat_name"], ascending=[False, True])
+
+    return temp_df["feat_name"].to_list()
 
 def explainRankByTreeShap(model, x_features_names, X, is_gradient=False):
     np.random.seed(0)

@@ -1,0 +1,5 @@
+index,lofo_knn_x_test_original,lofo_knn_x_test_4%_permute,lofo_knn_x_test_6%_permute,lofo_knn_x_test_10%_permute
+start,0,1,2,2
+event,1,2,1,1
+end,2,3,0,0
+size,3,0,3,3

@@ -14,10 +14,20 @@ import os
 import csv
 import argparse
 import pandas as pd
+
+# --- Evita warning do rpy2 sobre PCRE2 no macOS e força modo ABI ---
+if "CONDA_PREFIX" in os.environ:
+    os.environ.setdefault("DYLD_FALLBACK_LIBRARY_PATH",
+                          os.path.join(os.environ["CONDA_PREFIX"], "lib"))
+os.environ.setdefault("RPY2_CFFI_MODE", "ABI")
+
 import rpy2.robjects.packages as rpackages
 import rpy2.robjects as robjects
 from rpy2.robjects.vectors import StrVector
-from rpy2.robjects import pandas2ri
+from rpy2.robjects import pandas2ri, conversion
+
+
+
 
 def normalize(lista, min_range, max_range):
     vmin = min(lista)
@@ -82,12 +92,23 @@ def main(arg_dir = 'output',respMatrix=None,arg_url = None):
     
     #Importa o pacore ltm do R
     ltm = rpackages.importr('ltm')
-    pandas2ri.activate()
+    #pandas2ri.activate()
     
-    if arg_dir != '':
-        if not os.path.exists(arg_dir):
-            os.makedirs(arg_dir)
-        out = '/'+arg_dir
+    base = os.getcwd()
+
+    if arg_dir:
+        # normaliza o caminho informado
+        arg_dir = os.path.normpath(arg_dir)
+
+        # se vier absoluto (/algo), torna relativo à pasta atual para evitar escrever na raiz do macOS
+        if os.path.isabs(arg_dir):
+            arg_dir = arg_dir.lstrip(os.sep)
+
+        # cria a pasta destino de forma idempotente (sem TOCTOU)
+        os.makedirs(os.path.join(base, arg_dir), exist_ok=True)
+
+        # mantém o padrão do seu código: concatenar com os.getcwd()
+        out = os.sep + arg_dir
     else:
         out = ''
     

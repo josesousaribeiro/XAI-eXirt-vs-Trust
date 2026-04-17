@@ -1,0 +1,5 @@
+index,lofo_dt_x_test_original,lofo_dt_x_test_4%_permute,lofo_dt_x_test_6%_permute,lofo_dt_x_test_10%_permute
+V1,0,0,1,2
+V2,1,2,3,0
+V3,2,1,0,3
+V4,3,3,2,1
