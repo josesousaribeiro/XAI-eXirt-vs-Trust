@@ -143,6 +143,8 @@ def plotBumpChart(df_features_rank_copy,model,test,color_dic=None,fig_size=(3,2.
 
 
 
+#Esta parte do código deve ser modificado de acordo com número de colunas do dataset utilizado.
+
 #output_dataset_path = '_'+'diabetes'
 #color_dic = {'mass':'#ff7f0e', 'plas':'#ec96aa', 'pedi':'#aec7e8', 'preg':'#ffbb78', 'age':'#2ca02c', 'skin':'#98df8a', 'insu':'#ff9896', 'pres':'#9467bd'}
 
@@ -152,12 +154,36 @@ def plotBumpChart(df_features_rank_copy,model,test,color_dic=None,fig_size=(3,2.
 #output_dataset_path = '_'+'banknote_authentication'
 #color_dic = {'V1':'#ff7f0e', 'V2':'#ec96aa', 'V3':'#aec7e8', 'V4':'#ffbb78'}
 
-output_dataset_path = '_'+'mozilla4'
-color_dic = {'start': '#ff7f0e', 'end': '#ec96aa', 'event': '#aec7e8', 'size': '#ffbb78','id':'#9467bd'}
+#output_dataset_path = '_'+'mozilla4'
+#color_dic = {'start': '#ff7f0e', 'end': '#ec96aa', 'event': '#aec7e8', 'size': '#ffbb78','id':'#9467bd'}
+
+output_dataset_path = ''
+
+#features = ['start', 'end', 'event', 'size'] # Sua lista variável aqui
+
+
 
 df = pd.read_csv('.'+bar+'output'+output_dataset_path+bar+'csv'+bar+'df_explanation_analysis.csv',sep=',',index_col=0)
 
 
+
+# Paleta expandida com 40 cores distintas (limite de cores)
+palette = [
+    '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', # 1-5
+    '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', # 6-10
+    '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5', # 11-15
+    '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5', # 16-20
+    '#393b79', '#5254a3', '#6b6ecf', '#9c9ede', '#637939', # 21-25
+    '#8ca252', '#b5cf6b', '#cedb9c', '#8c6d31', '#bd9e39', # 26-30
+    '#e7ba52', '#e7cb94', '#843c39', '#ad494a', '#d6616b', # 31-35
+    '#e7969c', '#7b4173', '#a55194', '#ce6dbd', '#de9ed6'  # 36-40
+]
+
+# Criação dinâmica do dicionário
+# O operador % garante que, se passar de 40, as cores recomecem sem dar erro
+features = df[df.columns[1]]
+print(features)
+color_dic = {feature: palette[i % len(palette)] for i, feature in enumerate(features)}
 
 
 

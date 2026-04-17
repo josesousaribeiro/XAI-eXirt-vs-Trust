@@ -49,7 +49,7 @@ models = {
 
 
 
-dataset_name = 'mozilla4' #diabetes, banknote-authentication, climate-model-simulation-crashes, phoneme
+dataset_name = 'mozilla4' #diabetes, banknote-authentication, mozilla4, phoneme
 dataset = openml.datasets.get_dataset(dataset_name) 
 
 X, Y, categorical_indicator, attribute_names = dataset.get_data(

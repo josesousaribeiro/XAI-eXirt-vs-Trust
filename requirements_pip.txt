@@ -1,8 +1,8 @@
 #only in python 3.10.14
 py-ciu == 0.5.0.1
-ipython
-eli5
-lxml
-bs4
-scikit_posthocs
-eXirt
+ipython == 8.37.0
+eli5 == 0.16.0
+lxml == 6.0.2
+bs4 == 0.0.2
+scikit_posthocs == 0.11.4
+eXirt == 1.1.8
