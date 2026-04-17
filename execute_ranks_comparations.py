@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import util
 import seaborn as sns
+import string
 from scipy import stats
 from matplotlib.backends.backend_pdf import PdfPages
 
@@ -31,16 +32,16 @@ def bumpchart(df, ax, color_dic=None):
     for axis in axes:
         axis.invert_yaxis()
         axis.set_yticks(y_ticks)
-        axis.set_ylim((lines + 0.1, -0.1))
+        axis.set_ylim((lines - 0.5, -0.5))
     
     left_labels = df.iloc[0].sort_values().index
     right_labels = df.iloc[-1].sort_values().index
-    left_yaxis.set_yticklabels(left_labels, fontsize=5)
-    right_yaxis.set_yticklabels(right_labels, fontsize=5)
+    left_yaxis.set_yticklabels(left_labels, fontsize=6)
+    right_yaxis.set_yticklabels(right_labels, fontsize=6)
     return axes
 
-def plot_into_grid(df_raw, model, test, ax, color_dic):
-    """Processa dados, desenha na grade e retorna a correlação total."""
+def plot_into_grid(df_raw, model, test, ax, color_dic, letter):
+    """Processa dados e desenha na grade com a letra no título."""
     original = df_raw.iloc[:, 0]
     sum_corr = 0
     for i in range(1, len(df_raw.columns)):
@@ -59,12 +60,13 @@ def plot_into_grid(df_raw, model, test, ax, color_dic):
     df_transformed.index = ref_sequence
     df_transformed.columns = ['0%', '4%', '6%', '10%']
     
-    ax.set_title(f"{test.upper()} | {model.upper()} ($\sum c$: {round(sum_corr, 2)})", 
-                 fontsize=7, fontweight='bold', pad=5)
+    # Título integrando a Letra, o Método, o Modelo e a Correlação
+    ax.set_title(f"({letter}) {test.upper()} | {model.upper()} ($\sum c$: {round(sum_corr, 2)})", 
+                 fontsize=6, fontweight='bold', pad=6)
     
     bumpchart(df_transformed.transpose(), ax, color_dic)
     ax.tick_params(axis='x', labelsize=6, pad=0)
-    ax.set_ylabel('Rank', fontsize=6, labelpad=0)
+    #ax.set_ylabel('Rank', fontsize=6, labelpad=0)
     return sum_corr
 
 # 3. Execução Principal
@@ -78,30 +80,32 @@ color_dic = {feat: palette[i % len(palette)] for i, feat in enumerate(features_l
 models = ['lgbm', 'knn', 'mlp', 'dt']
 tests = ['shap', 'skater', 'eXirt','dalex', 'eli5','lofo']
 
-# Matriz para o Gráfico de Explanação (Estabilidade)
+# Matriz para o Gráfico de Estabilidade
 stability_matrix = pd.DataFrame(index=tests, columns=models)
 
 # Criação da figura do Mosaico
-fig_mosaico, axes = plt.subplots(len(tests), len(models), figsize=(6, 7), dpi=300)
+fig_mosaico, axes = plt.subplots(len(tests), len(models), figsize=(6, 7.5), dpi=300)
 
+letter_index = 0
 for r, test in enumerate(tests):
     for c, model in enumerate(models):
         col_prefix = f"{test}_{model}_x_test_"
         cols = [f"{col_prefix}original", f"{col_prefix}4%_permute", f"{col_prefix}6%_permute", f"{col_prefix}10%_permute"]
         
-        # Busca robusta (Case Insensitive)
         found_cols = [col for col in cols if col in df_master.columns]
         if not found_cols:
             col_prefix_low = f"{test.lower()}_{model}_x_test_"
             found_cols = [f"{col_prefix_low}{s}" for s in ["original", "4%_permute", "6%_permute", "10%_permute"] if f"{col_prefix_low}{s}" in df_master.columns]
 
         if len(found_cols) == 4:
-            corr_val = plot_into_grid(df_master[found_cols], model, test, axes[r, c], color_dic)
+            current_letter = string.ascii_uppercase[letter_index]
+            corr_val = plot_into_grid(df_master[found_cols], model, test, axes[r, c], color_dic, current_letter)
             stability_matrix.loc[test, model] = corr_val
+            letter_index += 1
         else:
             axes[r, c].set_axis_off()
 
-plt.tight_layout(pad=0.5)
+plt.tight_layout(pad=1.0)
 
 # --- PRODUÇÃO DOS ARQUIVOS SEPARADOS ---
 
@@ -111,7 +115,7 @@ with PdfPages(path_mosaico) as pdf:
     pdf.savefig(fig_mosaico, bbox_inches='tight')
     plt.close(fig_mosaico)
 
-# 2. Cria e Salva o Gráfico de Explanação (Heatmap)
+# 2. Cria e Salva o Gráfico de Estabilidade (Heatmap)
 fig_explancao, ax_sum = plt.subplots(figsize=(6, 4))
 sns.heatmap(stability_matrix.astype(float), annot=True, cmap="YlGnBu", fmt=".2f", ax=ax_sum)
 ax_sum.set_title("Explanation stability ($\sum c$ values) by XAI method and model", fontsize=10, fontweight='bold')
@@ -123,6 +127,6 @@ with PdfPages(path_explancao) as pdf:
     pdf.savefig(fig_explancao, bbox_inches='tight')
     plt.close(fig_explancao)
 
-print(f"Arquivos gerados com sucesso:")
-print(f"1. Mosaico: {path_mosaico}")
-print(f"2. Explanação: {path_explancao}")
+print(f"Mosaico e Heatmap gerados com sucesso:")
+print(f"1. PDF Mosaico: {path_mosaico}")
+print(f"2. PDF Estabilidade: {path_explancao}")
