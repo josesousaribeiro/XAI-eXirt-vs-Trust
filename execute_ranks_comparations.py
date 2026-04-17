@@ -2,330 +2,118 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import util
-
 from scipy import stats
+from matplotlib.backends.backend_pdf import PdfPages
 
+# 1. Configurações Iniciais de Caminho
 bar = util.bar_system()
+output_dataset_path = '' # Ajuste se necessário para '_diabetes', etc.
 
-def bumpchart(df, show_rank_axis= True, rank_axis_distance= 1.1, 
-              ax= None, scatter= False, holes= False,
-              line_args= {}, scatter_args= {}, hole_args= {},
-              color_dic=None):
-    
-    if ax is None:
-        left_yaxis= plt.gca()
-    else:
-        left_yaxis = ax
-
-    # Creating the right axis.
+# 2. Funções de Suporte Otimizadas para Mosaico
+def bumpchart(df, ax, color_dic=None):
+    """Versão 'Clean' do Bump Chart para visualização científica."""
+    left_yaxis = ax
     right_yaxis = left_yaxis.twinx()
-    
     axes = [left_yaxis, right_yaxis]
-    
-    # Creating the far right axis if show_rank_axis is True
-    if show_rank_axis:
-        far_right_yaxis = left_yaxis.twinx()
-        axes.append(far_right_yaxis)
     
     for col in df.columns:
         y = df[col]
         x = df.index.values
-        # Plotting blank points on the right axis/axes 
-        # so that they line up with the left axis.
+        # Garante o alinhamento dos eixos
         for axis in axes[1:]:
-            axis.plot(x, y, alpha= 0)
+            axis.plot(x, y, alpha=0)
 
-        if color_dic != None:
-            left_yaxis.plot(x, y, **line_args, color=color_dic[col], solid_capstyle='round')
-        else:
-            left_yaxis.plot(x, y, **line_args, solid_capstyle='round')    
-        # Adding scatter plots
-        
-        if scatter:
+        color = color_dic.get(col, '#7f7f7f') if color_dic else None
+        # Estilo de linha mais limpo
+        left_yaxis.plot(x, y, linewidth=2.5, alpha=0.7, color=color, solid_capstyle='round')
+        left_yaxis.scatter(x, y, s=20, alpha=0.9, color=color)
 
-            if color_dic != None:
-                left_yaxis.scatter(x, y, color = color_dic[col], **scatter_args)
-            else:
-                left_yaxis.scatter(x, y,**scatter_args)
-            #Adding see-through holes
-            if holes:
-                bg_color = left_yaxis.get_facecolor()
-                left_yaxis.scatter(x, y, color = bg_color, **hole_args)
-
-
-    # Number of lines
     lines = len(df.columns)
-
     y_ticks = [*range(0, lines)]
     
-    # Configuring the axes so that they line up well.
     for axis in axes:
         axis.invert_yaxis()
         axis.set_yticks(y_ticks)
         axis.set_ylim((lines + 0.2, -1))
     
-    # Sorting the labels to match the ranks.
+    # Rótulos laterais simplificados
     left_labels = df.iloc[0].sort_values().index
     right_labels = df.iloc[-1].sort_values().index
-    
-    left_yaxis.set_yticklabels(left_labels)
-    right_yaxis.set_yticklabels(right_labels)
-    
-    # Setting the position of the far right axis so that it doesn't overlap with the right axis
-    if show_rank_axis:
-        far_right_yaxis.spines["right"].set_position(("axes", rank_axis_distance))
-    
+    left_yaxis.set_yticklabels(left_labels, fontsize=7)
+    right_yaxis.set_yticklabels(right_labels, fontsize=7)
     return axes
 
-def retornRankPositions(df):
-    ref_sequence = list(df.iloc[:,0]) #primeira coluna sempre sera a referencia
-    print(ref_sequence)
-    df_tmp = df.copy()
-    for col in df.columns:
-        for idx1, val1 in enumerate(ref_sequence):
-            for idx2, val2 in enumerate(df[col]):
-                if val1 == val2:
-                    df_tmp.at[idx1,col] = idx2
-    df_tmp['index'] = ref_sequence
-    df_tmp = df_tmp.set_index('index')
-    return df_tmp
-             
-
-def plotBumpChart(df_features_rank_copy,model,test,color_dic=None,fig_size=(3,2.5), output_dataset_path=''):
-
-    plt.figure(figsize=fig_size,dpi=300)
-    plt.xticks(fontsize=9,rotation=90)
-    plt.tight_layout(pad=4)
-    plt.ylabel(test+'\n Relevance Rank',fontsize=9)
+def plot_into_grid(df_raw, model, test, ax, color_dic):
+    """Processa dados e desenha no eixo correspondente da grade."""
+    # Cálculo da Correlação de Spearman Consolidada
+    original = df_raw.iloc[:, 0]
     sum_corr = 0
-    for i,c in enumerate(df_features_rank_copy.columns):
-        original = df_features_rank_copy.iloc[:,0] #ranque original
-        if i > 0:
-            rank = list(df_features_rank_copy[c])
-            corr, p = stats.spearmanr(original, rank )
-            sum_corr = sum_corr + corr
-            plt.text(i-1+0.45, 8.1, 'c:'+str(round(corr,1)),fontsize=8)
-    plt.title('Correlations sum (c): '+str(round(sum_corr,1)),fontsize=9)
+    for i in range(1, len(df_raw.columns)):
+        rank = list(df_raw.iloc[:, i])
+        corr, _ = stats.spearmanr(original, rank)
+        sum_corr += corr
+
+    # Transformação de Rankings (Referenciada pela primeira coluna)
+    ref_sequence = list(df_raw.iloc[:, 0])
+    df_transformed = df_raw.copy()
+    for col in df_raw.columns:
+        for idx1, val1 in enumerate(ref_sequence):
+            for idx2, val2 in enumerate(df_raw[col]):
+                if val1 == val2:
+                    df_transformed.at[idx1, col] = idx2
     
-    df_transformed = retornRankPositions(df_features_rank_copy)
-    df_transformed.to_csv('.'+bar+'output'+output_dataset_path+bar+'csv'+bar+'df_explanation_analysis_transform_'+model+'_'+test+'.csv',sep=',')
-
-    for col_name in df_transformed.columns:
-        df_transformed = df_transformed.rename(columns={col_name: 
-                                                        col_name.replace("_x_test",":")
-                                                        .replace("_per","per")
-                                                        .replace("_","")
-                                                        .replace("original","0%")
-                                                        .replace("permute","")
-                                                        .replace("shap","")
-                                                        .replace("skater","")
-                                                        .replace("dalex","")
-                                                        .replace("lofo","")
-                                                        .replace("eli5","")
-                                                        .replace("eXirt","")
-                                                        })
-
-
-    df_transposed = df_transformed.transpose()
-    bumpchart( 
-                df_transposed.copy(), 
-                rank_axis_distance=1.05,
-                show_rank_axis = False, 
-                scatter = True, 
-                holes = False,
-                line_args = {"linewidth": 3, "alpha": 0.7},
-                scatter_args = {"s": 10, "alpha": 0.8},
-                color_dic=color_dic
-            ) ## bump chart class with nice examples can be found on github
-
+    df_transformed.index = ref_sequence
+    # Simplificação Radical do Eixo X: Apenas as porcentagens
+    df_transformed.columns = ['0%', '4%', '6%', '10%']
     
-    plt.savefig('.'+bar+'output'+output_dataset_path+bar+'fig'+bar+'ranks_comparations_'+model+'_'+test+'.png')
+    # Título do Subplot com Soma de Correlações
+    ax.set_title(f"{test.upper()} | {model.upper()}\n$\sum c$: {round(sum_corr, 2)}", 
+                 fontsize=10, fontweight='bold', pad=10)
+    
+    bumpchart(df_transformed.transpose(), ax, color_dic)
+    ax.tick_params(axis='x', labelsize=8)
+    ax.set_ylabel('Rank', fontsize=8)
 
+# 3. Execução Principal e Geração do PDF
+# Carga do DataFrame Original
+csv_path = f'.{bar}output{output_dataset_path}{bar}csv{bar}df_explanation_analysis.csv'
+df_master = pd.read_csv(csv_path, sep=',', index_col=0)
 
-
-#Esta parte do código deve ser modificado de acordo com número de colunas do dataset utilizado.
-
-#output_dataset_path = '_'+'diabetes'
-#color_dic = {'mass':'#ff7f0e', 'plas':'#ec96aa', 'pedi':'#aec7e8', 'preg':'#ffbb78', 'age':'#2ca02c', 'skin':'#98df8a', 'insu':'#ff9896', 'pres':'#9467bd'}
-
-#output_dataset_path = '_'+'phoneme'
-#color_dic = {'V1':'#ff7f0e', 'V2':'#ec96aa', 'V3':'#aec7e8', 'V4':'#ffbb78', 'V5':'#2ca02c'}
-
-#output_dataset_path = '_'+'banknote_authentication'
-#color_dic = {'V1':'#ff7f0e', 'V2':'#ec96aa', 'V3':'#aec7e8', 'V4':'#ffbb78'}
-
-#output_dataset_path = '_'+'mozilla4'
-#color_dic = {'start': '#ff7f0e', 'end': '#ec96aa', 'event': '#aec7e8', 'size': '#ffbb78','id':'#9467bd'}
-
-output_dataset_path = ''
-
-#features = ['start', 'end', 'event', 'size'] # Sua lista variável aqui
-
-
-
-df = pd.read_csv('.'+bar+'output'+output_dataset_path+bar+'csv'+bar+'df_explanation_analysis.csv',sep=',',index_col=0)
-
-
-
-# Paleta expandida com 40 cores distintas (limite de cores)
+# Definição Dinâmica de Cores (Paleta de 40 cores para as features)
 palette = [
-    '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', # 1-5
-    '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', # 6-10
-    '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5', # 11-15
-    '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5', # 16-20
-    '#393b79', '#5254a3', '#6b6ecf', '#9c9ede', '#637939', # 21-25
-    '#8ca252', '#b5cf6b', '#cedb9c', '#8c6d31', '#bd9e39', # 26-30
-    '#e7ba52', '#e7cb94', '#843c39', '#ad494a', '#d6616b', # 31-35
-    '#e7969c', '#7b4173', '#a55194', '#ce6dbd', '#de9ed6'  # 36-40
+    '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
+    '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5', '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5',
+    '#393b79', '#5254a3', '#6b6ecf', '#9c9ede', '#637939', '#8ca252', '#b5cf6b', '#cedb9c', '#8c6d31', '#bd9e39'
 ]
+features_list = df_master[df_master.columns[1]]
+color_dic = {feat: palette[i % len(palette)] for i, feat in enumerate(features_list)}
 
-# Criação dinâmica do dicionário
-# O operador % garante que, se passar de 40, as cores recomecem sem dar erro
-features = df[df.columns[1]]
-print(features)
-color_dic = {feature: palette[i % len(palette)] for i, feature in enumerate(features)}
+# Listas de iteração para a grade 6x4
+models = ['lgbm', 'knn', 'mlp', 'dt']
+tests = ['exirt', 'shap', 'skater','eli5', 'lofo', 'dalex']
 
+# Criação da figura mestre para o mosaico
+fig, axes = plt.subplots(len(tests), len(models), figsize=(18, 20), dpi=100)
 
+for r, test in enumerate(tests):
+    for c, model in enumerate(models):
+        # Montagem dinâmica das colunas conforme seu padrão de nomenclatura
+        col_prefix = f"{test}_{model}_x_test_"
+        cols = [f"{col_prefix}original", f"{col_prefix}4%_permute", f"{col_prefix}6%_permute", f"{col_prefix}10%_permute"]
+        
+        try:
+            df_subset = df_master[cols]
+            plot_into_grid(df_subset, model, test, axes[r, c], color_dic)
+        except KeyError:
+            # Oculta o gráfico se o dado específico não existir no CSV
+            axes[r, c].set_axis_off()
 
+plt.tight_layout(pad=3.0)
 
-model = 'mlp'
-test = 'exirt'
-df_tmp = df[['eXirt_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_4%_permute', 'eXirt_'+model+'_x_test_6%_permute', 'eXirt_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
+# Salvamento Final em PDF de alta qualidade
+pdf_save_path = f'.{bar}output{output_dataset_path}{bar}fig{bar}mosaico_comparativo_explicabilidade.pdf'
+with PdfPages(pdf_save_path) as pdf:
+    pdf.savefig(fig)
+    plt.close()
 
-
-model = 'lgbm'
-test = 'exirt'
-df_tmp = df[['eXirt_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_4%_permute', 'eXirt_'+model+'_x_test_6%_permute', 'eXirt_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'knn'
-test = 'exirt'
-df_tmp = df[['eXirt_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_4%_permute', 'eXirt_'+model+'_x_test_6%_permute', 'eXirt_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'dt'
-test = 'exirt'
-df_tmp = df[['eXirt_'+model+'_x_test_original', 'eXirt_'+model+'_x_test_4%_permute', 'eXirt_'+model+'_x_test_6%_permute', 'eXirt_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-
-
-
-model = 'mlp'
-test = 'shap'
-df_tmp = df[['shap_'+model+'_x_test_original', 'shap_'+model+'_x_test_4%_permute', 'shap_'+model+'_x_test_6%_permute', 'shap_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'lgbm'
-test = 'shap'
-df_tmp = df[['shap_'+model+'_x_test_original', 'shap_'+model+'_x_test_4%_permute', 'shap_'+model+'_x_test_6%_permute', 'shap_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'knn'
-test = 'shap'
-df_tmp = df[['shap_'+model+'_x_test_original', 'shap_'+model+'_x_test_4%_permute', 'shap_'+model+'_x_test_6%_permute', 'shap_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'dt'
-test = 'shap'
-df_tmp = df[['shap_'+model+'_x_test_original', 'shap_'+model+'_x_test_4%_permute', 'shap_'+model+'_x_test_6%_permute', 'shap_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-
-
-
-model = 'mlp'
-test = 'eli5'
-df_tmp = df[['eli5_'+model+'_x_test_original', 'eli5_'+model+'_x_test_4%_permute', 'eli5_'+model+'_x_test_6%_permute', 'eli5_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'lgbm'
-test = 'eli5'
-df_tmp = df[['eli5_'+model+'_x_test_original', 'eli5_'+model+'_x_test_4%_permute', 'eli5_'+model+'_x_test_6%_permute', 'eli5_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'knn'
-test = 'eli5'
-df_tmp = df[['eli5_'+model+'_x_test_original', 'eli5_'+model+'_x_test_4%_permute', 'eli5_'+model+'_x_test_6%_permute', 'eli5_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'dt'
-test = 'eli5'
-df_tmp = df[['eli5_'+model+'_x_test_original', 'eli5_'+model+'_x_test_4%_permute', 'eli5_'+model+'_x_test_6%_permute', 'eli5_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-
-
-
-
-model = 'mlp'
-test = 'dalex'
-df_tmp = df[['dalex_'+model+'_x_test_original', 'dalex_'+model+'_x_test_4%_permute', 'dalex_'+model+'_x_test_6%_permute', 'dalex_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'lgbm'
-test = 'dalex'
-df_tmp = df[['dalex_'+model+'_x_test_original', 'dalex_'+model+'_x_test_4%_permute', 'dalex_'+model+'_x_test_6%_permute', 'dalex_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'knn'
-test = 'dalex'
-df_tmp = df[['dalex_'+model+'_x_test_original', 'dalex_'+model+'_x_test_4%_permute', 'dalex_'+model+'_x_test_6%_permute', 'dalex_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'dt'
-test = 'dalex'
-df_tmp = df[['dalex_'+model+'_x_test_original', 'dalex_'+model+'_x_test_4%_permute', 'dalex_'+model+'_x_test_6%_permute', 'dalex_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-
-
-
-model = 'mlp'
-test = 'lofo'
-df_tmp = df[['lofo_'+model+'_x_test_original', 'lofo_'+model+'_x_test_4%_permute', 'lofo_'+model+'_x_test_6%_permute', 'lofo_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'lgbm'
-test = 'lofo'
-df_tmp = df[['lofo_'+model+'_x_test_original', 'lofo_'+model+'_x_test_4%_permute', 'lofo_'+model+'_x_test_6%_permute', 'lofo_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'knn'
-test = 'lofo'
-df_tmp = df[['lofo_'+model+'_x_test_original', 'lofo_'+model+'_x_test_4%_permute', 'lofo_'+model+'_x_test_6%_permute', 'lofo_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'dt'
-test = 'lofo'
-df_tmp = df[['lofo_'+model+'_x_test_original', 'lofo_'+model+'_x_test_4%_permute', 'lofo_'+model+'_x_test_6%_permute', 'lofo_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-
-model = 'mlp'
-test = 'skater'
-df_tmp = df[['skater_'+model+'_x_test_original', 'skater_'+model+'_x_test_4%_permute', 'skater_'+model+'_x_test_6%_permute', 'skater_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'lgbm'
-test = 'skater'
-df_tmp = df[['skater_'+model+'_x_test_original', 'skater_'+model+'_x_test_4%_permute', 'skater_'+model+'_x_test_6%_permute', 'skater_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'knn'
-test = 'skater'
-df_tmp = df[['skater_'+model+'_x_test_original', 'skater_'+model+'_x_test_4%_permute', 'skater_'+model+'_x_test_6%_permute', 'skater_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-model = 'dt'
-test = 'skater'
-df_tmp = df[['skater_'+model+'_x_test_original', 'skater_'+model+'_x_test_4%_permute', 'skater_'+model+'_x_test_6%_permute', 'skater_'+model+'_x_test_10%_permute']]
-plotBumpChart(df_tmp,model,test,color_dic,output_dataset_path=output_dataset_path)
-
-
-
-
-
-
-
+print(f"Mosaico PDF gerado com sucesso em: {pdf_save_path}")
