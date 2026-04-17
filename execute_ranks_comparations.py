@@ -2,16 +2,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import util
+import seaborn as sns
 from scipy import stats
 from matplotlib.backends.backend_pdf import PdfPages
 
 # 1. Configurações Iniciais de Caminho
 bar = util.bar_system()
-output_dataset_path = '' # Ajuste se necessário para '_diabetes', etc.
+output_dataset_path = '' 
 
-# 2. Funções de Suporte Otimizadas para Mosaico
 def bumpchart(df, ax, color_dic=None):
-    """Versão 'Clean' do Bump Chart para visualização científica."""
+    """Versão ultra-compacta para publicações científicas."""
     left_yaxis = ax
     right_yaxis = left_yaxis.twinx()
     axes = [left_yaxis, right_yaxis]
@@ -19,14 +19,11 @@ def bumpchart(df, ax, color_dic=None):
     for col in df.columns:
         y = df[col]
         x = df.index.values
-        # Garante o alinhamento dos eixos
-        for axis in axes[1:]:
-            axis.plot(x, y, alpha=0)
+        for axis in axes[1:]: axis.plot(x, y, alpha=0)
 
         color = color_dic.get(col, '#7f7f7f') if color_dic else None
-        # Estilo de linha mais limpo
-        left_yaxis.plot(x, y, linewidth=2.5, alpha=0.7, color=color, solid_capstyle='round')
-        left_yaxis.scatter(x, y, s=20, alpha=0.9, color=color)
+        left_yaxis.plot(x, y, linewidth=1.5, alpha=0.7, color=color, solid_capstyle='round')
+        left_yaxis.scatter(x, y, s=8, alpha=0.9, color=color)
 
     lines = len(df.columns)
     y_ticks = [*range(0, lines)]
@@ -34,18 +31,16 @@ def bumpchart(df, ax, color_dic=None):
     for axis in axes:
         axis.invert_yaxis()
         axis.set_yticks(y_ticks)
-        axis.set_ylim((lines + 0.2, -1))
+        axis.set_ylim((lines + 0.1, -0.1))
     
-    # Rótulos laterais simplificados
     left_labels = df.iloc[0].sort_values().index
     right_labels = df.iloc[-1].sort_values().index
-    left_yaxis.set_yticklabels(left_labels, fontsize=7)
-    right_yaxis.set_yticklabels(right_labels, fontsize=7)
+    left_yaxis.set_yticklabels(left_labels, fontsize=5)
+    right_yaxis.set_yticklabels(right_labels, fontsize=5)
     return axes
 
 def plot_into_grid(df_raw, model, test, ax, color_dic):
-    """Processa dados e desenha no eixo correspondente da grade."""
-    # Cálculo da Correlação de Spearman Consolidada
+    """Processa dados, desenha na grade e retorna a correlação total."""
     original = df_raw.iloc[:, 0]
     sum_corr = 0
     for i in range(1, len(df_raw.columns)):
@@ -53,7 +48,6 @@ def plot_into_grid(df_raw, model, test, ax, color_dic):
         corr, _ = stats.spearmanr(original, rank)
         sum_corr += corr
 
-    # Transformação de Rankings (Referenciada pela primeira coluna)
     ref_sequence = list(df_raw.iloc[:, 0])
     df_transformed = df_raw.copy()
     for col in df_raw.columns:
@@ -63,57 +57,72 @@ def plot_into_grid(df_raw, model, test, ax, color_dic):
                     df_transformed.at[idx1, col] = idx2
     
     df_transformed.index = ref_sequence
-    # Simplificação Radical do Eixo X: Apenas as porcentagens
     df_transformed.columns = ['0%', '4%', '6%', '10%']
     
-    # Título do Subplot com Soma de Correlações
-    ax.set_title(f"{test.upper()} | {model.upper()}\n$\sum c$: {round(sum_corr, 2)}", 
-                 fontsize=10, fontweight='bold', pad=10)
+    ax.set_title(f"{test.upper()} | {model.upper()} ($\sum c$: {round(sum_corr, 2)})", 
+                 fontsize=7, fontweight='bold', pad=5)
     
     bumpchart(df_transformed.transpose(), ax, color_dic)
-    ax.tick_params(axis='x', labelsize=8)
-    ax.set_ylabel('Rank', fontsize=8)
+    ax.tick_params(axis='x', labelsize=6, pad=0)
+    ax.set_ylabel('Rank', fontsize=6, labelpad=0)
+    return sum_corr
 
-# 3. Execução Principal e Geração do PDF
-# Carga do DataFrame Original
+# 3. Execução Principal
 csv_path = f'.{bar}output{output_dataset_path}{bar}csv{bar}df_explanation_analysis.csv'
 df_master = pd.read_csv(csv_path, sep=',', index_col=0)
 
-# Definição Dinâmica de Cores (Paleta de 40 cores para as features)
-palette = [
-    '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
-    '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5', '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5',
-    '#393b79', '#5254a3', '#6b6ecf', '#9c9ede', '#637939', '#8ca252', '#b5cf6b', '#cedb9c', '#8c6d31', '#bd9e39'
-]
+palette = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f']
 features_list = df_master[df_master.columns[1]]
 color_dic = {feat: palette[i % len(palette)] for i, feat in enumerate(features_list)}
 
-# Listas de iteração para a grade 6x4
 models = ['lgbm', 'knn', 'mlp', 'dt']
-tests = ['exirt', 'shap', 'skater','eli5', 'lofo', 'dalex']
+tests = ['shap', 'skater', 'eXirt','dalex', 'eli5','lofo']
 
-# Criação da figura mestre para o mosaico
-fig, axes = plt.subplots(len(tests), len(models), figsize=(18, 20), dpi=100)
+# Matriz para o Gráfico de Explanação (Estabilidade)
+stability_matrix = pd.DataFrame(index=tests, columns=models)
+
+# Criação da figura do Mosaico
+fig_mosaico, axes = plt.subplots(len(tests), len(models), figsize=(6, 7), dpi=300)
 
 for r, test in enumerate(tests):
     for c, model in enumerate(models):
-        # Montagem dinâmica das colunas conforme seu padrão de nomenclatura
         col_prefix = f"{test}_{model}_x_test_"
         cols = [f"{col_prefix}original", f"{col_prefix}4%_permute", f"{col_prefix}6%_permute", f"{col_prefix}10%_permute"]
         
-        try:
-            df_subset = df_master[cols]
-            plot_into_grid(df_subset, model, test, axes[r, c], color_dic)
-        except KeyError:
-            # Oculta o gráfico se o dado específico não existir no CSV
+        # Busca robusta (Case Insensitive)
+        found_cols = [col for col in cols if col in df_master.columns]
+        if not found_cols:
+            col_prefix_low = f"{test.lower()}_{model}_x_test_"
+            found_cols = [f"{col_prefix_low}{s}" for s in ["original", "4%_permute", "6%_permute", "10%_permute"] if f"{col_prefix_low}{s}" in df_master.columns]
+
+        if len(found_cols) == 4:
+            corr_val = plot_into_grid(df_master[found_cols], model, test, axes[r, c], color_dic)
+            stability_matrix.loc[test, model] = corr_val
+        else:
             axes[r, c].set_axis_off()
 
-plt.tight_layout(pad=3.0)
+plt.tight_layout(pad=0.5)
 
-# Salvamento Final em PDF de alta qualidade
-pdf_save_path = f'.{bar}output{output_dataset_path}{bar}fig{bar}mosaico_comparativo_explicabilidade.pdf'
-with PdfPages(pdf_save_path) as pdf:
-    pdf.savefig(fig)
-    plt.close()
+# --- PRODUÇÃO DOS ARQUIVOS SEPARADOS ---
 
-print(f"Mosaico PDF gerado com sucesso em: {pdf_save_path}")
+# 1. Salva o Mosaico de Bump Charts
+path_mosaico = f'.{bar}output{output_dataset_path}{bar}fig{bar}mosaico_compacto_paper.pdf'
+with PdfPages(path_mosaico) as pdf:
+    pdf.savefig(fig_mosaico, bbox_inches='tight')
+    plt.close(fig_mosaico)
+
+# 2. Cria e Salva o Gráfico de Explanação (Heatmap)
+fig_explancao, ax_sum = plt.subplots(figsize=(6, 4))
+sns.heatmap(stability_matrix.astype(float), annot=True, cmap="YlGnBu", fmt=".2f", ax=ax_sum)
+ax_sum.set_title("Explanation stability ($\sum c$ values) by XAI method and model", fontsize=10, fontweight='bold')
+ax_sum.set_xlabel("Model", fontsize=8)
+ax_sum.set_ylabel("XAI method", fontsize=8)
+
+path_explancao = f'.{bar}output{output_dataset_path}{bar}fig{bar}estabilidade_explanacao.pdf'
+with PdfPages(path_explancao) as pdf:
+    pdf.savefig(fig_explancao, bbox_inches='tight')
+    plt.close(fig_explancao)
+
+print(f"Arquivos gerados com sucesso:")
+print(f"1. Mosaico: {path_mosaico}")
+print(f"2. Explanação: {path_explancao}")
