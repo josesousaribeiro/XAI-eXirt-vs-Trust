@@ -10,7 +10,12 @@ from matplotlib.ticker import FixedLocator
 
 # 1. Configurações Iniciais
 bar = util.bar_system()
+
 output_dataset_path = '' 
+#output_dataset_path = '_banknote_authentication'
+#output_dataset_path = '_diabetes'
+#output_dataset_path = '_phoneme'
+#output_dataset_path = '_mozilla4'
 
 def bumpchart(df, ax, color_dic=None):
     """Versão robusta: garante que os nomes das variáveis apareçam nos eixos Y."""
@@ -87,7 +92,23 @@ csv_path = f'.{bar}output{output_dataset_path}{bar}csv{bar}df_explanation_analys
 df_master = pd.read_csv(csv_path, sep=',', index_col=0)
 
 # Mapeamento de cores persistente
-palette = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f']
+palette = [
+    # Paleta Base (Matplotlib tab10)
+    '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', 
+    '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
+    
+    # Tons Suaves (Matplotlib tab20 light)
+    '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5', 
+    '#c49c94', '#f7b6d2', '#c7c7c7', '#dbdb8d', '#9edae5',
+    
+    # Tons Escuros e Profundos
+    '#393b79', '#5254a3', '#6b6ecf', '#9c9ede', '#637939', 
+    '#8ca252', '#b5cf6b', '#cedb9c', '#8c6d31', '#bd9e39',
+    
+    # Variações Terrosas e Vibrantes
+    '#e7ba52', '#e7cb94', '#843c39', '#ad494a', '#d6616b', 
+    '#e7969c', '#7b4173', '#a55194', '#ce6dbd', '#de9ed6'
+]
 # Usamos o índice (nomes das variáveis) para fixar as cores
 features_list = df_master.index.tolist()
 color_dic = {feat: palette[i % len(palette)] for i, feat in enumerate(features_list)}

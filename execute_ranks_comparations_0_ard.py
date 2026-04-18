@@ -9,6 +9,11 @@ from matplotlib.backends.backend_pdf import PdfPages
 # 1. Configurações Iniciais
 bar = util.bar_system()
 output_dataset_path = '' 
+#output_dataset_path = '_banknote_authentication'
+#output_dataset_path = '_diabetes'
+#output_dataset_path = '_phoneme'
+#output_dataset_path = '_mozilla4'
+
 
 def bumpchart(df, ax, color_dic=None):
     """Versão com ajuste de margem Y para garantir respiro no topo e base."""

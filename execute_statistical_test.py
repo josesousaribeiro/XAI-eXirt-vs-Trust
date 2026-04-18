@@ -9,6 +9,11 @@ import util
 # 1. Configuração de caminhos e sistema
 bar = util.bar_system()
 output_dataset_path = ''  # Ajuste conforme necessário (ex: '_diabetes')
+#output_dataset_path = '_banknote_authentication'
+#output_dataset_path = '_diabetes'
+#output_dataset_path = '_phoneme'
+#output_dataset_path = '_mozilla4'
+
 
 # 2. Carga dos dados
 file_path = f'.{bar}output{output_dataset_path}{bar}csv{bar}df_performance_analysis.csv'
