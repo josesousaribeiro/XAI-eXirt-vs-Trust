@@ -74,6 +74,7 @@ csv_path = f'.{bar}output{output_dataset_path}{bar}csv{bar}df_explanation_analys
 df_master = pd.read_csv(csv_path, sep=',', index_col=0)
 
 palette = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f']
+
 features_list = df_master[df_master.columns[1]]
 color_dic = {feat: palette[i % len(palette)] for i, feat in enumerate(features_list)}
 
