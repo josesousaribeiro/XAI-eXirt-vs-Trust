@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XAI Evaluation Pipeline - Single Dataset Analysis</title>
+    <style>
+        :root {
+            --bg-main: #fafafc;
+            --card-bg: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --accent-blue: #2b6cb0;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .image-container {
+            max-width: 100% !important; 
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed #cbd5e0;
+        }
+
+        .container-pdf {
+            width: 100%;           
+            height: 450px;         
+            margin: 0 auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .pdf-figura {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: #1a202c;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .step-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: var(--accent-blue);
+            color: white;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            margin-top: 0;
+            color: #1a202c;
+            border-left: 4px solid var(--accent-blue);
+            padding-left: 12px;
+        }
+
+        .meta-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 25px;
+        }
+
+        .image-container {
+            text-align: center;
+            height: auto;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed #cbd5e0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+
+        .mosaic-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 15px; 
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .mosaic-item {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .mosaic-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 3px;
+        }
+
+        .mosaic-caption {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .caption {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* Novas regras de estilo para a tabela integrada */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .csv-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            background-color: var(--card-bg);
+        }
+
+        .csv-table th {
+            background-color: #f8fafc;
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .csv-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .csv-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .csv-table tr:hover {
+            background-color: #f8fafc;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+
+        <header>
+            <h1>Results of experiments using models based on the phoneme dataset.</h1>
+            <div class="subtitle">Note that the purpose of this summary is to show the graphical results obtained when applying the pipeline discussed in the article to the dataset. The intention here is not to extend discussions about the results, but rather to present them.</div>
+        </header>
+
+        <main>
+
+            <h2>Performance Stability Analysis</h2>
+
+            <section class="step-section">
+                <!--<span class="step-number">Overview</span>-->
+                <h2></h2>
+                <p class="meta-description">
+                    The initial analysis of the pipeline focuses on the performance stability of the models under both baseline and perturbed conditions. Table 1 presents the evaluation metrics — Accuracy, Precision, Recall, F1-score, and ROC AUC — for the four models across different levels of data perturbation.
+                </p>
+                <div class="table-responsive">
+                    <table class="csv-table">
+                        <thead>
+                            <tr id="cabecalho-csv"></tr>
+                        </thead>
+                        <tbody id="corpo-csv"></tbody>
+                    </table>
+                    <div class="caption"> Table 1: Summary of the model’s performances, according to tests carried out.</div>
+                </div>
+            </section>
+
+            
+            <section class="step-section">
+                <!--<span class="step-number">Passo 1</span>-->
+                
+                <p class="meta-description">
+                    Figure 1 presents the pairwise p-values derived from the Friedman-Nemenyi test, comparing the performance metrics reported in Table 1. Within the comparison matrix, lower p-values indicate stronger evidence to reject the null hypothesis of performance equivalence. Adopting a significance threshold of alpha = 0.05, we can identify statistically significant differences with 95% confidence. 
+                </p>
+                <div class="image-container">
+                    <img src="output_phoneme/fig/statistical_test_v2.png" alt="Statistical test summary Friedman Nemenyi.">
+                    <div class="caption">Figure 1: Statistical test summary Friedman Nemenyi.</div>
+                </div>
+            </section>
+
+            <h2>Do Model Explanations Depend on Data or Algorithms?</h2>
+            <section class="step-section">
+                <!--<span class="step-number">Passo 2</span>-->
+    
+                <p class="meta-description">
+                    Figure 2 illustrates the XAI methods on the y-axis and the machine learning models on the x-axis. The cells present the ARD values calculated based on the distance between the baseline rankings (0%) and the rankings generated from 4%, 6%, and 10% perturbations. The color scale facilitates interpretation: yellow tones represent measurements with lower data dependency (higher stability), while red tones indicate higher dependency.
+                </p>
+                <div class="image-container">
+                    <div class="container-pdf">
+                        <embed src="output_phoneme/fig/mosaico_ordenado_ard.pdf" type="application/pdf" class="pdf-figura" />
+                    </div>
+                    <div class="caption">Figure 2: Summary of feature relevance ranks generated in all tests.</div>
+                </div>
+            </section>
+
+
+            <section class="step-section">
+                <!--<span class="step-number">Passo 3</span>-->
+                <h2></h2>
+                <p class="meta-description">
+                    Figure 3 illustrates the XAI methods on the y-axis and the machine learning models on the x-axis. The cells present the ARD values calculated based on the distance between the baseline rankings (0%) and the rankings generated from 4%, 6%, and 10% perturbations. The color scale facilitates interpretation: yellow tones represent measurements with lower data dependency (higher stability), while red tones indicate higher dependency.
+                </p>
+                <div class="image-container">
+                    <div class="container-pdf">
+                        <embed src="output_phoneme/fig/estabilidade_ard.pdf" type="application/pdf" class="pdf-figura" />
+                    </div>
+                    <div class="caption">Figure 3: Resume of ARD value for each experiment.</div>
+                </div>
+            </section>
+
+             <section class="step-section">
+                <!--<span class="step-number">Passo 2</span>-->
+                <h2></h2>
+                <p class="meta-description">
+                    To address the research question "Do Model Explanations Depend on Algorithm?", a visual analysis was developed in Figure \ref{figs_bumps}. In this stage, however, the focus rests exclusively on explanations generated without noise (0%), comparing interpretations produced by different model architectures to assess rank convergence or divergence (Figure 4).
+                </p>
+                <div class="image_container">
+                    <div class="container-pdf">
+                        <embed src="output_phoneme/fig/comparativo_dependencia_modelo_ordenado.pdf" type="application/pdf" class="pdf-figura" />
+                        <div class="caption">Figure 4: Rank correlation among models at 0% of perturbation.</div>
+                    </div>
+                </div>
+            </section>
+
+
+            <h2>Identification of reliable models</h2>
+            <section class="step-section">
+                <!--<span class="step-number">Passo 4</span>-->
+                
+                <p class="meta-description">
+                    Figures 5 and 6 were generated exclusively using the eXirt method. The purpose of this analysis is to validate the method ability to extract experimental metadata grounded in Item Response Theory (IRT), allowing for a clear distinction between inherently reliable predictive models and those operating as subproducts (artifacts) of perturbed data. This approach enables the diagnosis of classifier behavior under stress, utilizing item characteristic curves to measure the level of uncertainty introduced by data perturbations.
+                </p>
+                
+                <div class="mosaic-grid">
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_lgbm_x_test_original/irt_item_param_phoneme_lgbm_x_test_original__icc.png" alt="ICC Plasma">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_lgbm_x_test_3%_permute/irt_item_param_phoneme_lgbm_x_test_3%_permute__icc.png" alt="ICC Mass">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_lgbm_x_test_6%_permute/irt_item_param_phoneme_lgbm_x_test_6%_permute__icc.png" alt="ICC Age">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_lgbm_x_test_10%_permute/irt_item_param_phoneme_lgbm_x_test_10%_permute__icc.png" alt="ICC Preg">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_mlp_x_test_original/irt_item_param_phoneme_mlp_x_test_original__icc.png" alt="ICC Insu">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_mlp_x_test_3%_permute/irt_item_param_phoneme_mlp_x_test_3%_permute__icc.png" alt="ICC Pres">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_mlp_x_test_6%_permute/irt_item_param_phoneme_mlp_x_test_6%_permute__icc.png" alt="ICC Skin">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_mlp_x_test_10%_permute/irt_item_param_phoneme_mlp_x_test_10%_permute__icc.png" alt="ICC Pedi">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                </div>
+                <div class="caption" style="text-align: center; margin-top: 15px;">
+                    Figure 5: Summary of the global ICC of the LGBM and MLP Models.
+                </div>
+            </section>
+
+            <section class="step-section">
+                <!--<span class="step-number">Passo 4</span>-->
+                <h2></h2>
+                <p class="meta-description">
+                </p>
+                
+                <div class="mosaic-grid">
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_knn_x_test_original/irt_item_param_phoneme_knn_x_test_original__icc.png" alt="ICC Plasma">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_knn_x_test_3%_permute/irt_item_param_phoneme_knn_x_test_3%_permute__icc.png" alt="ICC Mass">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_knn_x_test_6%_permute/irt_item_param_phoneme_knn_x_test_6%_permute__icc.png" alt="ICC Age">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_knn_x_test_10%_permute/irt_item_param_phoneme_knn_x_test_10%_permute__icc.png" alt="ICC Preg">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_dt_x_test_original/irt_item_param_phoneme_dt_x_test_original__icc.png" alt="ICC Insu">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_dt_x_test_3%_permute/irt_item_param_phoneme_dt_x_test_3%_permute__icc.png" alt="ICC Pres">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_dt_x_test_6%_permute/irt_item_param_phoneme_dt_x_test_6%_permute__icc.png" alt="ICC Skin">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                    <div class="mosaic-item">
+                        <img src="content_eXirt_phoneme/out_fig/phoneme_dt_x_test_10%_permute/irt_item_param_phoneme_dt_x_test_10%_permute__icc.png" alt="ICC Pedi">
+                        <div class="mosaic-caption"></div>
+                    </div>
+                </div>
+                <div class="caption" style="text-align: center; margin-top: 15px;">
+                    Figure 6: Summary of the global ICC of the KNN and DT Models.
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
+    <script>
+        // 1. Defina o arquivo CSV (coloque o caminho correto da sua pasta)
+        const caminhoCSV = 'output_phoneme/csv/df_performance_analysis.csv'; 
+
+        // 2. DIGITE AQUI APENAS AS COLUNAS QUE DESEJA MOSTRAR (Exatamente como estão escritas no cabeçalho do CSV)
+        // Se deixar a lista vazia ou comentada, ele mostrará todas as colunas automaticamente.
+        const colunasDesejadas = [
+            'lgbm_x_test_original','lgbm_x_test_3%_permute', 'lgbm_x_test_6%_permute', 'mlp_x_test_10%_permute',
+            'mlp_x_test_original','mlp_x_test_3%_permute', 'lgbm_x_test_6%_permute', 'mlp_x_test_10%_permute',
+            'knn_x_test_original','knn_x_test_3%_permute', 'knn_x_test_6%_permute', 'knn_x_test_10%_permute',
+            'dt_x_test_original','dt_x_test_3%_permute', 'dt_x_test_6%_permute', 'dt_x_test_10%_permute'
+        ];
+
+        Papa.parse(caminhoCSV, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            delimitersToGuess: [',', ';', '\t', '|'],
+            complete: function(resultado) {
+                renderizarTabelaFiltrada(resultado.data);
+            },
+            error: function(erro) {
+                console.error("Erro ao carregar os dados experimentais do CSV:", erro);
+            }
+        });
+
+        function renderizarTabelaFiltrada(dados) {
+            if (dados.length === 0) return;
+
+            const elementoCabecalho = document.getElementById('cabecalho-csv');
+            const elementoCorpo = document.getElementById('corpo-csv');
+
+            // Define se usaremos o filtro personalizado ou todas as colunas originais do CSV
+            const colunasParaExibir = (colunasDesejadas && colunasDesejadas.length > 0) 
+                ? colunasDesejadas 
+                : Object.keys(dados[0]);
+
+            // Geração do cabeçalho
+            colunasParaExibir.forEach(coluna => {
+                const th = document.createElement('th');
+                th.textContent = coluna;
+                elementoCabecalho.appendChild(th);
+            });
+
+            // Geração das linhas
+            dados.forEach(linha => {
+                const tr = document.createElement('tr');
+                
+                colunasParaExibir.forEach(coluna => {
+                    const td = document.createElement('td');
+                    // Caso a coluna desejada não exista nessa linha do CSV, exibe um traço (-)
+                    td.textContent = linha[coluna] !== undefined ? linha[coluna] : '-';
+                    tr.appendChild(td);
+                });
+
+                elementoCorpo.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+</html>

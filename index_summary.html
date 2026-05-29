@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XAI Evaluation Pipeline - Main Hub</title>
+    <style>
+        :root {
+            --bg-main: #fafafc;
+            --card-bg: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --accent-blue: #2b6cb0;
+            --accent-hover: #1d4ed8;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin: 0;
+            padding: 60px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 2.6rem;
+            color: #1a202c;
+            margin-bottom: 15px;
+            letter-spacing: -0.8px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .pipeline-overview {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 50px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            margin-top: 0;
+            color: #1a202c;
+            border-left: 4px solid var(--accent-blue);
+            padding-left: 12px;
+            margin-bottom: 20px;
+        }
+
+        /* Grid moderno para exibir os 4 datasets */
+        .grid-datasets {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        /* Torna o painel 100% responsivo para telas menores/mobile */
+        @media (max-width: 768px) {
+            .grid-datasets {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .dataset-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .dataset-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: #cbd5e0;
+        }
+
+        .dataset-badge {
+            display: inline-block;
+            background: #ebf8ff;
+            color: var(--accent-blue);
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+            width: fit-content;
+        }
+
+        .dataset-card h3 {
+            font-size: 1.5rem;
+            margin: 0 0 12px 0;
+            color: #1a202c;
+        }
+
+        .dataset-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin: 0 0 25px 0;
+            flex-grow: 1;
+        }
+
+        .btn-view {
+            display: block;
+            text-align: center;
+            background-color: var(--accent-blue);
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: background-color 0.15s ease;
+        }
+
+        .btn-view:hover {
+            background-color: var(--accent-hover);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            color: #a0aec0;
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <header>
+            <h1>XAI Evaluation Pipeline Dashboard</h1>
+            <div class="subtitle">
+                Central de análise experimental multimodelo estruturada sobre a estabilidade, relevância e comportamento das explicações de Inteligência Artificial.
+            </div>
+        </header>
+
+        <main>
+            
+            <section class="pipeline-overview">
+                <h2 class="section-title">Sobre o Pipeline de Avaliação</h2>
+                <p style="color: var(--text-secondary); margin: 0; font-size: 1.05rem;">
+                    Este hub consolida os resultados obtidos através da perturbação sistemática de baselines e mapeamento multidimensional via Teoria de Resposta ao Item (IRT). Selecione abaixo o conjunto de dados específico para acessar os relatórios dinâmicos contendo as métricas de performance compiladas de arquivos CSV e visualizações gráficas avançadas.
+                </p>
+            </section>
+
+            <section class="grid-datasets">
+                
+                <!-- Card 1: Diabetes (A página atual que estruturamos) -->
+                <div class="dataset-card">
+                    <div>
+                        <span class="dataset-badge">Tabular / Classificação</span>
+                        <h3>Diabetes Dataset Analysis</h3>
+                        <p>Análise de estabilidade focada em modelos LGBM, MLP, KNN e DT sob perturbações de 3%, 6% e 10% no baseline, incluindo curvas ICC e métricas consolidadas de ARD.</p>
+                    </div>
+                    <a href="summary_results_diabetes.html" class="btn-view">Visualizar Relatório Completo</a>
+                </div>
+
+                <!-- Card 2: Dataset Alternativo 2 (Altere os textos/links conforme seus dados) -->
+                <div class="dataset-card">
+                    <div>
+                        <span class="dataset-badge">Tabular / Regressão</span>
+                        <h3>California Housing Analysis</h3>
+                        <p>Exploração das explicações de modelos lineares e baseados em árvores para previsão imobiliária. Mapeamento de estabilidade de ranqueamento SHAP e Eli5.</p>
+                    </div>
+                    <a href="summary_results_phoneme.html" class="btn-view">Visualizar Relatório Completo</a>
+                </div>
+
+                <!-- Card 3: Dataset Alternativo 3 -->
+                <div class="dataset-card">
+                    <div>
+                        <span class="dataset-badge">Tabular / Binário</span>
+                        <h3>Heart Disease Analysis</h3>
+                        <p>Pipeline experimental sobre dados clínicos cardiovasculares. Verificação de dependência algorítmica vs dependência de dados no comportamento do perfil EMSX.</p>
+                    </div>
+                    <a href="summary_results_banknote_authentication.html" class="btn-view">Visualizar Relatório Completo</a>
+                </div>
+
+                <!-- Card 4: Dataset Alternativo 4 -->
+                <div class="dataset-card">
+                    <div>
+                        <span class="dataset-badge">Texto / NLP</span>
+                        <h3>IMDb Sentiment Analysis</h3>
+                        <p>Avaliação do comportamento de explicabilidade local e global em modelos de linguagem (Transformers e LSTM) sob técnicas de perturbação textual.</p>
+                    </div>
+                    <a href="summary_results_mozilla4.html" class="btn-view">Visualizar Relatório Completo</a>
+                </div>
+
+            </section>
+
+        </main>
+
+        <footer>
+            XAI Evaluation Pipeline • Gerado via Pipeline Experimental
+        </footer>
+
+    </div>
+
+</body>
+</html>
