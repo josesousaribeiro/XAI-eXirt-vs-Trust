@@ -1,43 +1,50 @@
 # XAI-eXirt-vs-Trust
-Este repositório possui o código desenvolvido no artigo: Exploring Reliability in XAI: Do Model Explanations Depend on Data or Algorithms?
+This repository contains the code developed in the article: Exploring Reliability in XAI: Do Model Explanations Depend on Data or Algorithms?
 
+# Results of applying the pipeline to 4 different datasets
 
-# Instalação
+Link: [summary_menu.html](summary_menu.html)
 
-Criação de um ambiente anaconda com versão específica do python:
+# Installation
+
+Creating an Anaconda environment with a specific Python version:
 
 ```
 conda create -n env_xai python=3.10.14
+
 ```
 
-
-Ativação do ambiente:
+Activating the environment:
 
 ```
 conda activate env_xai
+
 ```
 
-Instalação de dependências 
-``` 
-conda install --yes --file requirements_conda.txt
+Installing dependencies:
+
+``` conda install --yes --file requirements_conda.txt
 
 pip install -r requirements_pip.txt
+
 ```
 
-Execução pipeline principal:
+Running the main pipeline:
 
 ```
 python execute_main.py
 
 ```
 
-Execução da criação de ranques:
+Running the rankings:
+
 ```
-python execute_ranks_comparations.py
+python execute_ranks_comparisons.py
+
 ```
 
-Execução de análises estatísticas:
+Running statistical analyses:
+
 ```
 python execute_statistical_test.py
 ```
-
