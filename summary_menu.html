@@ -170,16 +170,16 @@
         <header>
             <h1>XAI Evaluation Pipeline Dashboard</h1>
             <div class="subtitle">
-                Central de análise experimental multimodelo estruturada sobre a estabilidade, relevância e comportamento das explicações de Inteligência Artificial.
+                Results obtained from applying the experimental pipeline to four binary classification datasets, as described in the article "Reliability in XAI: Do Model Explanations Depend on Data or Algorithms?".
             </div>
         </header>
 
         <main>
             
             <section class="pipeline-overview">
-                <h2 class="section-title">Sobre o Pipeline de Avaliação</h2>
+                <h2 class="section-title">About this summary</h2>
                 <p style="color: var(--text-secondary); margin: 0; font-size: 1.05rem;">
-                    Este hub consolida os resultados obtidos através da perturbação sistemática de baselines e mapeamento multidimensional via Teoria de Resposta ao Item (IRT). Selecione abaixo o conjunto de dados específico para acessar os relatórios dinâmicos contendo as métricas de performance compiladas de arquivos CSV e visualizações gráficas avançadas.
+                    In paper "Reliability in XAI: Do Model Explanations Depend on Data or Algorithms?" the experimental evaluations were conducted using four representative real-world binary classification datasets: diabetes (9 attributes and 768 instances), banknote-authentication (5 attributes and 1,372 instances), phoneme (6 attributes and 5,404 instances), and mozilla4 (6 attributes and 15,545 instances). The selection of these datasets enabled the validation of the pipeline effectiveness across various domains and data distributions, ensuring that the observations regarding stability and reliability reflect practical, real-world challenges.
                 </p>
             </section>
 
@@ -188,41 +188,42 @@
                 <!-- Card 1: Diabetes (A página atual que estruturamos) -->
                 <div class="dataset-card">
                     <div>
-                        <span class="dataset-badge">Tabular / Classificação</span>
+                        <span class="dataset-badge">Binary Classification</span>
                         <h3>Diabetes Dataset Analysis</h3>
-                        <p>Análise de estabilidade focada em modelos LGBM, MLP, KNN e DT sob perturbações de 3%, 6% e 10% no baseline, incluindo curvas ICC e métricas consolidadas de ARD.</p>
+                        <p>Description: 9 attributes and 768 instances</p>
                     </div>
-                    <a href="summary_results_diabetes.html" class="btn-view">Visualizar Relatório Completo</a>
+                    <a href="summary_results_diabetes.html" class="btn-view">View Summary</a>
+                </div>
+
+                
+                <!-- Card 3: Dataset Alternativo 3 -->
+                <div class="dataset-card">
+                    <div>
+                        <span class="dataset-badge">Binary Classification</span>
+                        <h3>Banknote-Autentication Dataset Analysis</h3>
+                        <p>Description: 5 attributes and 1,372 instances</p>
+                    </div>
+                    <a href="summary_results_banknote_authentication.html" class="btn-view">View Summary</a>
                 </div>
 
                 <!-- Card 2: Dataset Alternativo 2 (Altere os textos/links conforme seus dados) -->
                 <div class="dataset-card">
                     <div>
-                        <span class="dataset-badge">Tabular / Regressão</span>
-                        <h3>California Housing Analysis</h3>
-                        <p>Exploração das explicações de modelos lineares e baseados em árvores para previsão imobiliária. Mapeamento de estabilidade de ranqueamento SHAP e Eli5.</p>
+                        <span class="dataset-badge">Binary Classification</span>
+                        <h3>Phoneme Dataset Analysis</h3>
+                        <p>Description: 6 attributes and 5,404 instances</p>
                     </div>
-                    <a href="summary_results_phoneme.html" class="btn-view">Visualizar Relatório Completo</a>
-                </div>
-
-                <!-- Card 3: Dataset Alternativo 3 -->
-                <div class="dataset-card">
-                    <div>
-                        <span class="dataset-badge">Tabular / Binário</span>
-                        <h3>Heart Disease Analysis</h3>
-                        <p>Pipeline experimental sobre dados clínicos cardiovasculares. Verificação de dependência algorítmica vs dependência de dados no comportamento do perfil EMSX.</p>
-                    </div>
-                    <a href="summary_results_banknote_authentication.html" class="btn-view">Visualizar Relatório Completo</a>
+                    <a href="summary_results_phoneme.html" class="btn-view">View Summary</a>
                 </div>
 
                 <!-- Card 4: Dataset Alternativo 4 -->
                 <div class="dataset-card">
                     <div>
-                        <span class="dataset-badge">Texto / NLP</span>
-                        <h3>IMDb Sentiment Analysis</h3>
-                        <p>Avaliação do comportamento de explicabilidade local e global em modelos de linguagem (Transformers e LSTM) sob técnicas de perturbação textual.</p>
+                        <span class="dataset-badge">Binary Classification</span>
+                        <h3>Mozilla 4 Dataset Analysis</h3>
+                        <p>Description: 6 attributes and 15,545 instances</p>
                     </div>
-                    <a href="summary_results_mozilla4.html" class="btn-view">Visualizar Relatório Completo</a>
+                    <a href="summary_results_mozilla4.html" class="btn-view">View Summary</a>
                 </div>
 
             </section>
